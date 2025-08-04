@@ -203,7 +203,7 @@ public class HttpsApiClient {
      * @param function     name of the API function to execute
      * @param functionData data for the function, or {@code null} to not include data in the request
      * @return raw data
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     protected byte[] requestRaw(String function, Object functionData) {
@@ -215,7 +215,7 @@ public class HttpsApiClient {
      *
      * @param function name of the API function to execute
      * @return raw data
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     protected byte[] requestRaw(String function) {
@@ -230,7 +230,7 @@ public class HttpsApiClient {
      * @param responseDataType class to parse the response data into
      * @param <R>              type to return
      * @return response data, or {@code null} if there was none
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     protected <R> R request(String function, Object functionData, Class<R> responseDataType) {
@@ -244,7 +244,7 @@ public class HttpsApiClient {
      * @param responseDataType class to parse the response data into
      * @param <R>              type to return
      * @return response data, or {@code null} if there was none
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     protected <R> R request(String function, Class<R> responseDataType) {
@@ -256,7 +256,7 @@ public class HttpsApiClient {
      *
      * @param function     name of the API function to execute
      * @param functionData data for the function, or {@code null} to not include data in the request
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     protected void request(String function, Object functionData) {
@@ -267,7 +267,7 @@ public class HttpsApiClient {
      * Sends a request to the server with no data for the function and also expecting no response data.
      *
      * @param function name of the API function to execute
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     protected void request(String function) {
@@ -281,7 +281,7 @@ public class HttpsApiClient {
      * @param functionData data for the function, or {@code null} to not include data in the request
      * @param partName     name of the other part of the request
      * @param partData     raw data for the other part of the request
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     protected void multipartRequest(String function, Object functionData, String partName, Object partData) {
@@ -294,7 +294,7 @@ public class HttpsApiClient {
      * @param function name of the API function to execute
      * @param partName name of the other part of the request
      * @param partData raw data for the other part of the request
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     protected void multipartRequest(String function, String partName, Object partData) {
@@ -318,7 +318,7 @@ public class HttpsApiClient {
      *
      * @param customData client custom data (ignored by vanilla servers)
      * @return server {@link ServerHealth health}
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     public ServerHealth checkHealth(String customData) {
@@ -330,7 +330,7 @@ public class HttpsApiClient {
      * This function does not require authentication.
      *
      * @return server {@link ServerHealth health}
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     public ServerHealth checkHealth() {
@@ -341,8 +341,8 @@ public class HttpsApiClient {
      * Verifies that the current authentication token is still valid.
      *
      * @throws InvalidTokenException if the token is invalid
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws ApiException          if an API error occurs
+     * @throws RequestException      if an error occurs while sending the request
      */
     public void verifyAuthenticationToken() {
         request("VerifyAuthenticationToken");
@@ -359,8 +359,8 @@ public class HttpsApiClient {
      *
      * @param minimumPrivilegeLevel minimum privilege level to attempt to acquire by logging in
      * @throws PasswordlessLoginNotPossibleException if passwordless login is not currently possible
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws ApiException                          if an API error occurs
+     * @throws RequestException                      if an error occurs while sending the request
      * @see #removeClientPassword()
      * @see #getPrivilegeLevel()
      */
@@ -380,8 +380,8 @@ public class HttpsApiClient {
      * @param minimumPrivilegeLevel minimum privilege level to attempt to acquire by logging in
      * @param password              plaintext password
      * @throws WrongPasswordException if the password is incorrect
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws ApiException           if an API error occurs
+     * @throws RequestException       if an error occurs while sending the request
      * @see #setClientPassword(String)
      * @see #setAdminPassword(String)
      */
@@ -396,7 +396,7 @@ public class HttpsApiClient {
      * Retrieves the current state of the server.
      *
      * @return {@link ServerGameState server game state}
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     public ServerGameState queryServerState() {
@@ -409,7 +409,7 @@ public class HttpsApiClient {
      * Retrieves the currently applied and pending server options.
      *
      * @return {@link ServerOptions server options}
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     public ServerOptions getServerOptions() {
@@ -420,7 +420,7 @@ public class HttpsApiClient {
      * Retrieves the currently applied Advanced Game Settings.
      *
      * @return {@link AdvancedGameSettings}
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     public AdvancedGameSettings getAdvancedGameSettings() {
@@ -433,7 +433,7 @@ public class HttpsApiClient {
      * This will automatically enable Advanced Game Settings for the currently loaded save if they are not enabled already.
      *
      * @param settings new Advanced Game Settings values
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      * @see AdvancedGameSettings
      */
@@ -451,8 +451,8 @@ public class HttpsApiClient {
      * @param name     server name
      * @param password plaintext admin password
      * @throws ServerAlreadyClaimedException if the server is already claimed
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws ApiException                  if an API error occurs
+     * @throws RequestException              if an error occurs while sending the request
      */
     public void claimServer(String name, String password) {
         requestToken("ClaimServer", Map.of(
@@ -467,8 +467,8 @@ public class HttpsApiClient {
      *
      * @param name new server name
      * @throws ServerNotClaimedException if the server is not claimed yet
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws ApiException              if an API error occurs
+     * @throws RequestException          if an error occurs while sending the request
      */
     public void renameServer(String name) {
         request("RenameServer", Map.of("serverName", name));
@@ -482,9 +482,9 @@ public class HttpsApiClient {
      *
      * @param password plaintext password, or an empty string to remove the password
      * @throws ServerNotClaimedException if the server is not claimed yet
-     * @throws PasswordInUseException if {@code password} is already used as the admin password
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws PasswordInUseException    if {@code password} is already used as the admin password
+     * @throws ApiException              if an API error occurs
+     * @throws RequestException          if an error occurs while sending the request
      */
     public void setClientPassword(String password) {
         request("SetClientPassword", Map.of("password", password));
@@ -496,7 +496,7 @@ public class HttpsApiClient {
      * <p>
      * This will invalidate all previously issued Client authentication tokens.
      *
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      * @see #setClientPassword(String)
      */
@@ -514,11 +514,11 @@ public class HttpsApiClient {
      * {@link #getPrivilegeLevel()} can be used to check the current privilege level.
      *
      * @param password plaintext password
-     * @throws ServerNotClaimedException if the server is not claimed yet
+     * @throws ServerNotClaimedException     if the server is not claimed yet
      * @throws CannotRemovePasswordException if {@code password} is empty
-     * @throws PasswordInUseException if {@code password} is already used as the player password
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws PasswordInUseException        if {@code password} is already used as the player password
+     * @throws ApiException                  if an API error occurs
+     * @throws RequestException              if an error occurs while sending the request
      */
     public void setAdminPassword(String password) {
         requestToken("SetAdminPassword", Map.of("password", password));
@@ -531,7 +531,7 @@ public class HttpsApiClient {
      * This does not change the currently loaded session.
      *
      * @param sessionName name of the session to automatically load on server startup
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     public void setAutoLoadSessionName(String sessionName) {
@@ -544,7 +544,7 @@ public class HttpsApiClient {
      *
      * @param command command line to run
      * @return {@link CommandResult command result}
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     public CommandResult runCommand(String command) {
@@ -555,7 +555,7 @@ public class HttpsApiClient {
      * Shuts down the server.
      * This function requires {@link PrivilegeLevel#ADMIN}.
      *
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     public void shutdownServer() {
@@ -567,7 +567,7 @@ public class HttpsApiClient {
      * This function requires {@link PrivilegeLevel#ADMIN}.
      *
      * @param options new server option values
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      * @see ServerOptions
      */
@@ -580,7 +580,7 @@ public class HttpsApiClient {
      * This function requires {@link PrivilegeLevel#ADMIN}.
      *
      * @param newGameData parameters needed to create the session
-     * @throws ApiException if an API error occurs
+     * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
     public void createNewSession(NewGameData newGameData) {
@@ -593,8 +593,8 @@ public class HttpsApiClient {
      *
      * @param saveName name of the save file to create (without the extension)
      * @throws SaveFailedException if the game could not be saved
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws ApiException        if an API error occurs
+     * @throws RequestException    if an error occurs while sending the request
      */
     public void save(String saveName) {
         request("SaveGame", Map.of("saveName", saveName));
@@ -606,8 +606,8 @@ public class HttpsApiClient {
      *
      * @param saveName name of the save file to delete (without the extension)
      * @throws DeleteSaveFailedException if the file could not be deleted
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws ApiException              if an API error occurs
+     * @throws RequestException          if an error occurs while sending the request
      */
     public void deleteSave(String saveName) {
         request("DeleteSaveFile", Map.of("saveName", saveName));
@@ -618,10 +618,10 @@ public class HttpsApiClient {
      * This function requires {@link PrivilegeLevel#ADMIN}.
      *
      * @param sessionName name of the session to delete
-     * @throws SessionNotFoundException if there were no files belonging to the specified session
+     * @throws SessionNotFoundException     if there were no files belonging to the specified session
      * @throws DeleteSessionFailedException if the files could not be deleted
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws ApiException                 if an API error occurs
+     * @throws RequestException             if an error occurs while sending the request
      */
     public void deleteSession(String sessionName) {
         request("DeleteSaveSession", Map.of("sessionName", sessionName));
@@ -633,8 +633,8 @@ public class HttpsApiClient {
      *
      * @return {@link ServerSessions server sessions}
      * @throws EnumerateSessionsException if session saves could not be enumerated
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws ApiException               if an API error occurs
+     * @throws RequestException           if an error occurs while sending the request
      */
     public ServerSessions enumerateSessions() {
         return request("EnumerateSessions", ServerSessions.class);
@@ -647,8 +647,8 @@ public class HttpsApiClient {
      * @param saveName                   name of the save file to load (without the extension)
      * @param enableAdvancedGameSettings {@code true} if the file should be loaded with Advanced Game Settings enabled
      * @throws LoadFailedException if the save file could not be loaded
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws ApiException        if an API error occurs
+     * @throws RequestException    if an error occurs while sending the request
      */
     public void loadSave(String saveName, boolean enableAdvancedGameSettings) {
         request("LoadGame", Map.of("saveName", saveName, "enableAdvancedGameSettings", enableAdvancedGameSettings));
@@ -662,12 +662,12 @@ public class HttpsApiClient {
      * @param saveName                   name of the save file to create (without the extension)
      * @param load                       {@code true} if the file should be loaded immediately
      * @param enableAdvancedGameSettings {@code true} if the file should be loaded with Advanced Game Settings enabled
-     * @throws InvalidSaveException if the save file is invalid
+     * @throws InvalidSaveException     if the save file is invalid
      * @throws UnsupportedSaveException if the save file is not supported by the server
-     * @throws SaveFailedException if the file could not be saved
-     * @throws LoadFailedException if the save file could not be loaded
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws SaveFailedException      if the file could not be saved
+     * @throws LoadFailedException      if the save file could not be loaded
+     * @throws ApiException             if an API error occurs
+     * @throws RequestException         if an error occurs while sending the request
      */
     public void uploadSave(byte[] data, String saveName, boolean load, boolean enableAdvancedGameSettings) {
         multipartRequest("UploadSaveGame", Map.of(
@@ -684,8 +684,8 @@ public class HttpsApiClient {
      * @param saveName name of the save file to download (without the extension)
      * @return save file data
      * @throws FileNotFoundException if the save file could not be found
-     * @throws ApiException if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
+     * @throws ApiException          if an API error occurs
+     * @throws RequestException      if an error occurs while sending the request
      */
     public byte[] downloadSave(String saveName) {
         return requestRaw("DownloadSaveGame", Map.of("saveName", saveName));
