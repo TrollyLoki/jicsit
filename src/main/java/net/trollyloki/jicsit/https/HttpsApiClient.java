@@ -18,6 +18,8 @@ import net.trollyloki.jicsit.https.exception.ServerNotClaimedException;
 import net.trollyloki.jicsit.https.exception.SessionNotFoundException;
 import net.trollyloki.jicsit.https.exception.UnsupportedSaveException;
 import net.trollyloki.jicsit.https.exception.WrongPasswordException;
+import net.trollyloki.jicsit.https.trustmanager.FingerprintBasedTrustManager;
+import net.trollyloki.jicsit.https.trustmanager.InsecureTrustManager;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -57,14 +59,33 @@ public class HttpsApiClient {
 
     /**
      * Creates a new client.
+     * <p>
+     * The client is initially unauthenticated.
+     * An API token for authentication can be provided by calling {@link #setToken(String)} on the created client.
+     * Authentication can also be obtained by calling {@link #passwordlessLogin(PrivilegeLevel)}
+     * or {@link #passwordLogin(PrivilegeLevel, String)}, but usage of these functions by third-party applications is discouraged by the developers.
+     * <p>
+     * The following custom trust manager implementations may be helpful
+     * when attempting to connect to servers that are using self-signed certificates:
+     * <ul>
+     *     <li>
+     *         {@link FingerprintBasedTrustManager}
+     *         can be created with the fingerprint displayed by the game
+     *         and will verify that the server's certificate matches it when connecting.
+     *     </li>
+     *     <li>
+     *         {@link InsecureTrustManager}
+     *         simply accepts any certificate presented by the server.
+     *         <strong>This is not secure</strong> but could be useful when connecting to unknown servers.
+     *     </li>
+     * </ul>
      *
-     * @param host  server host name
-     * @param port  server port
-     * @param token API token, or {@code null} for an unauthenticated client
+     * @param host         server host name
+     * @param port         server port
+     * @param trustManager custom trust manager to use, or {@code null} to use the default trust manager
      * @throws URISyntaxException if the constructed HTTPS URI is invalid
      */
-    public HttpsApiClient(String host, int port, String token) throws URISyntaxException {
-        setToken(token);
+    public HttpsApiClient(String host, int port, TrustManager trustManager) throws URISyntaxException {
 
         RestClient.Builder builder = RestClient.builder().requestInterceptor((request, body, execution) -> {
             // without this interceptor the requests don't include a content length header for some reason
@@ -72,13 +93,12 @@ public class HttpsApiClient {
         });
 
         // certificate handling
-        //TODO: Add some sort of fingerprint checking like the game client has
         SSLContext sslContext;
         try {
             sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, new TrustManager[]{new InsecureTrustManager()}, null);
+            sslContext.init(null, trustManager == null ? null : new TrustManager[]{trustManager}, null);
         } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            throw new UnsupportedOperationException(e);
         }
         builder.requestFactory(new JdkClientHttpRequestFactory(HttpClient.newBuilder().sslContext(sslContext).build()));
 
@@ -95,11 +115,15 @@ public class HttpsApiClient {
     }
 
     /**
-     * Creates a new (unauthenticated) client.
+     * Creates a new client using the default trust manager.
+     * Note that this means the client will <strong>refuse to connect to servers using self-signed certificates</strong>.
+     * If you need to connect to a server that is using a self-signed certificate,
+     * provide a custom trust manager as explained by {@link #HttpsApiClient(String, int, TrustManager)}
      *
      * @param host server host name
      * @param port server port
      * @throws URISyntaxException if the constructed HTTPS URI is invalid
+     * @see #HttpsApiClient(String, int, TrustManager)
      */
     public HttpsApiClient(String host, int port) throws URISyntaxException {
         this(host, port, null);
