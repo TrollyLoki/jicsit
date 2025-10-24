@@ -143,7 +143,7 @@ public class HttpsApiClient {
      * <p>
      * {@link PrivilegeLevel#API_TOKEN} allows the client to execute all functions.
      *
-     * @return privilege level, if no token is set then {@link PrivilegeLevel#NOT_AUTHENTICATED}
+     * @return {@link PrivilegeLevel}, {@link PrivilegeLevel#NOT_AUTHENTICATED} if no token is set
      * @throws IllegalArgumentException if the current authentication token is invalid
      */
     public PrivilegeLevel getPrivilegeLevel() {
@@ -341,7 +341,7 @@ public class HttpsApiClient {
      * Also allows passing custom data between the server and the client.
      *
      * @param customData client custom data (ignored by vanilla servers)
-     * @return server {@link ServerHealth health}
+     * @return {@link ServerHealth}
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
@@ -353,7 +353,7 @@ public class HttpsApiClient {
      * Performs a health check on the server API.
      * This function does not require authentication.
      *
-     * @return server {@link ServerHealth health}
+     * @return {@link ServerHealth}
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
@@ -419,7 +419,7 @@ public class HttpsApiClient {
     /**
      * Retrieves the current state of the server.
      *
-     * @return {@link ServerGameState server game state}
+     * @return {@link ServerGameState}
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
@@ -432,7 +432,7 @@ public class HttpsApiClient {
     /**
      * Retrieves the currently applied and pending server options.
      *
-     * @return {@link ServerOptions server options}
+     * @return {@link ServerOptions}
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
@@ -567,7 +567,7 @@ public class HttpsApiClient {
      * This function requires {@link PrivilegeLevel#ADMIN}.
      *
      * @param command command line to run
-     * @return {@link CommandResult command result}
+     * @return {@link CommandResult}
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
@@ -655,7 +655,7 @@ public class HttpsApiClient {
      * Enumerates all session saves available on the server.
      * This function requires {@link PrivilegeLevel#ADMIN}.
      *
-     * @return {@link ServerSessions server sessions}
+     * @return {@link ServerSessions}
      * @throws EnumerateSessionsException if session saves could not be enumerated
      * @throws ApiException               if an API error occurs
      * @throws RequestException           if an error occurs while sending the request
