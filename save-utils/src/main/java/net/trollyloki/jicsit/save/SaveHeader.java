@@ -1,4 +1,4 @@
-package net.trollyloki.jicsit.https;
+package net.trollyloki.jicsit.save;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

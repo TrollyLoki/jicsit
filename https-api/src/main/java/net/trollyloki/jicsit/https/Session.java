@@ -1,5 +1,6 @@
 package net.trollyloki.jicsit.https;
 
+import net.trollyloki.jicsit.save.SaveHeader;
 
 import java.util.List;
 

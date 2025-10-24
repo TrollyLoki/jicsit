@@ -1,0 +1,9 @@
+[versions]
+spring = "6.2.12"
+jackson = "2.19.2"
+
+[libraries]
+spring-web = { module = "org.springframework:spring-web", version.ref = "spring" }
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }

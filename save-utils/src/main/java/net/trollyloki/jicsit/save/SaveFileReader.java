@@ -1,7 +1,5 @@
 package net.trollyloki.jicsit.save;
 
-import net.trollyloki.jicsit.https.SaveHeader;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
