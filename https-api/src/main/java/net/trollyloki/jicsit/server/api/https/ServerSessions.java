@@ -1,5 +1,7 @@
 package net.trollyloki.jicsit.server.api.https;
 
+import net.trollyloki.jicsit.save.Session;
+
 import java.util.List;
 
 /**

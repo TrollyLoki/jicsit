@@ -1,6 +1,4 @@
-package net.trollyloki.jicsit.server.api.https;
-
-import net.trollyloki.jicsit.save.SaveHeader;
+package net.trollyloki.jicsit.save;
 
 import java.util.List;
 
