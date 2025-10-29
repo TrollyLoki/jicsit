@@ -325,13 +325,36 @@ public class HttpsApiClient {
         multipartRequest(function, null, partName, partData);
     }
 
-    private void requestToken(String function, Object functionData) {
+    /**
+     * Sends a request to the server expecting a new authentication token in response.
+     * <p>
+     * Upon success, the current authentication token is updated for use by subsequent requests.
+     *
+     * @param function     name of the API function to execute
+     * @param functionData data for the function, or {@code null} to not include data in the request
+     * @throws ApiException     if an API error occurs
+     * @throws RequestException if an error occurs while sending the request
+     */
+    protected void requestToken(String function, Object functionData) {
         record Schema(String authenticationToken) {
         }
         String newToken = request(function, functionData, Schema.class).authenticationToken;
         if (newToken != null && !newToken.isEmpty()) {
             token = newToken;
         }
+    }
+
+    /**
+     * Sends a request to the server with no data for the function and also expecting a new authentication token in response.
+     * <p>
+     * Upon success, the current authentication token is updated for use by subsequent requests.
+     *
+     * @param function name of the API function to execute
+     * @throws ApiException     if an API error occurs
+     * @throws RequestException if an error occurs while sending the request
+     */
+    protected void requestToken(String function) {
+        requestToken(function, null);
     }
 
     /**
