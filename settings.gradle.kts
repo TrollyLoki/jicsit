@@ -1,5 +1,6 @@
 rootProject.name = "jicsit"
 
-include("lightweight-query-api")
-include("https-api")
+include("server-api")
+include("server-api-query")
+include("server-api-https")
 include("save-utils")

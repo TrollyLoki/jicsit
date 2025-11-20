@@ -12,7 +12,7 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("httpsApi") {
+        create<MavenPublication>("serverApiHttps") {
             from(components["java"])
         }
     }

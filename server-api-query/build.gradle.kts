@@ -5,7 +5,7 @@ plugins {
 
 publishing {
     publications {
-        create<MavenPublication>("lightweightQueryApi") {
+        create<MavenPublication>("serverApiQuery") {
             from(components["java"])
         }
     }
