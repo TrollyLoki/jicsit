@@ -1,11 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
-import net.trollyloki.jicsit.server.api.https.HttpsApiClient;
+import net.trollyloki.jicsit.server.api.https.HttpsApi;
 
 /**
  * The server has not been claimed yet.
  *
- * @see HttpsApiClient#claimServer(String, String)
+ * @see HttpsApi#claimServer(String, String)
  */
 public class ServerNotClaimedException extends ApiException {
 

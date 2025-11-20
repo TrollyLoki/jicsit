@@ -1,13 +1,13 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
-import net.trollyloki.jicsit.server.api.https.HttpsApiClient;
+import net.trollyloki.jicsit.server.api.https.HttpsApi;
 import net.trollyloki.jicsit.server.api.https.PrivilegeLevel;
 
 /**
  * The client's authentication token is invalid.
  *
- * @see HttpsApiClient#passwordlessLogin(PrivilegeLevel)
- * @see HttpsApiClient#passwordLogin(PrivilegeLevel, String)
+ * @see HttpsApi#passwordlessLogin(PrivilegeLevel)
+ * @see HttpsApi#passwordLogin(PrivilegeLevel, String)
  */
 public class InvalidTokenException extends ApiException {
 

@@ -20,10 +20,10 @@ import java.util.Map;
  *
  * @param current current server option values
  * @param pending pending server option values
- * @see HttpsApiClient#renameServer(String)
- * @see HttpsApiClient#setAdminPassword(String)
- * @see HttpsApiClient#setClientPassword(String)
- * @see HttpsApiClient#setAutoLoadSessionName(String)
+ * @see HttpsApi#renameServer(String)
+ * @see HttpsApi#setAdminPassword(String)
+ * @see HttpsApi#setClientPassword(String)
+ * @see HttpsApi#setAutoLoadSessionName(String)
  */
 public record ServerOptions(
         @JsonProperty("serverOptions") Map<String, String> current,

@@ -1,11 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
-import net.trollyloki.jicsit.server.api.https.HttpsApiClient;
+import net.trollyloki.jicsit.server.api.https.HttpsApi;
 
 /**
  * Passwordless login is not currently possible.
  *
- * @see HttpsApiClient#removeClientPassword()
+ * @see HttpsApi#removeClientPassword()
  */
 public class PasswordlessLoginNotPossibleException extends ApiException {
 
