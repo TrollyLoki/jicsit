@@ -18,6 +18,7 @@ import net.trollyloki.jicsit.server.api.https.exception.SessionNotFoundException
 import net.trollyloki.jicsit.server.api.https.exception.UnsupportedSaveException;
 import net.trollyloki.jicsit.server.api.https.exception.WrongPasswordException;
 
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -396,7 +397,7 @@ public class HttpsApi {
      * Uploads a save file to the server, and optionally loads it immediately.
      * This function requires {@link PrivilegeLevel#ADMIN}.
      *
-     * @param data                       save file data
+     * @param data                       input stream containing the save file data
      * @param saveName                   name of the save file to create (without the extension)
      * @param load                       {@code true} if the file should be loaded immediately
      * @param enableAdvancedGameSettings {@code true} if the file should be loaded with Advanced Game Settings enabled
@@ -407,7 +408,7 @@ public class HttpsApi {
      * @throws ApiException             if an API error occurs
      * @throws RequestException         if an error occurs while sending the request
      */
-    public void uploadSave(byte[] data, String saveName, boolean load, boolean enableAdvancedGameSettings) {
+    public void uploadSave(InputStream data, String saveName, boolean load, boolean enableAdvancedGameSettings) {
         client.multipartRequest("UploadSaveGame", Map.of(
                 "saveName", saveName,
                 "loadSaveGame", load,
@@ -420,12 +421,12 @@ public class HttpsApi {
      * This function requires {@link PrivilegeLevel#ADMIN}.
      *
      * @param saveName name of the save file to download (without the extension)
-     * @return save file data
+     * @return input stream containing the save file data
      * @throws FileNotFoundException if the save file could not be found
      * @throws ApiException          if an API error occurs
      * @throws RequestException      if an error occurs while sending the request
      */
-    public byte[] downloadSave(String saveName) {
+    public InputStream downloadSave(String saveName) {
         return client.requestRaw("DownloadSaveGame", Map.of("saveName", saveName));
     }
 

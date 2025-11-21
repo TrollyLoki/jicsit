@@ -5,8 +5,11 @@ import net.trollyloki.jicsit.server.api.https.exception.ApiException;
 import net.trollyloki.jicsit.server.api.https.trustmanager.FingerprintBasedTrustManager;
 import net.trollyloki.jicsit.server.api.https.trustmanager.InsecureTrustManager;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.LinkedMultiValueMap;
@@ -16,6 +19,8 @@ import org.springframework.web.client.RestClientException;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -39,6 +44,12 @@ public class HttpsApiClient {
             return ApiException.createApiException(errorCode, errorMessage, errorData);
         }
 
+    }
+
+    private final ObjectMapper errorJsonMapper = Jackson2ObjectMapperBuilder.json().build();
+
+    private void handleError(HttpRequest request, ClientHttpResponse response) throws IOException {
+        throw errorJsonMapper.readValue(response.getBody(), ResponseSchema.class).createApiException();
     }
 
     /**
@@ -87,10 +98,7 @@ public class HttpsApiClient {
         builder.requestFactory(new JdkClientHttpRequestFactory(HttpClient.newBuilder().sslContext(sslContext).build()));
 
         // error handling
-        ObjectMapper jsonMapper = Jackson2ObjectMapperBuilder.json().build();
-        builder.defaultStatusHandler(HttpStatusCode::isError, (httpRequest, httpResponse) -> {
-            throw jsonMapper.readValue(httpResponse.getBody(), ResponseSchema.class).createApiException();
-        });
+        builder.defaultStatusHandler(HttpStatusCode::isError, this::handleError);
 
         // server configuration
         builder.baseUrl(new URI("https", null, host, port, "/api/v1", null, null));
@@ -155,11 +163,11 @@ public class HttpsApiClient {
         return createRequest().contentType(MediaType.APPLICATION_JSON).body(createRequestBody(function, functionData));
     }
 
-    private RestClient.RequestBodySpec createMultipartRequest(String function, Object functionData, String partName, Object partData) {
+    private RestClient.RequestBodySpec createMultipartRequest(String function, Object functionData, String partName, InputStream partData) {
         MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
 
         parts.add("data", createRequestBody(function, functionData));
-        parts.add(partName, partData);
+        parts.add(partName, new InputStreamResource(partData));
 
         return createRequest().contentType(MediaType.MULTIPART_FORM_DATA).body(parts);
     }
@@ -172,8 +180,17 @@ public class HttpsApiClient {
         }
     }
 
-    private byte[] rawResponse(RestClient.RequestBodySpec request) {
-        return readResponse(request, ParameterizedTypeReference.forType(byte[].class));
+    private InputStream getRawResponse(RestClient.RequestBodySpec request) {
+        try {
+            return request.exchange((httpRequest, response) -> {
+                if (response.getStatusCode().isError()) {
+                    handleError(httpRequest, response);
+                }
+                return response.getBody();
+            }, false);
+        } catch (RestClientException e) {
+            throw new RequestException(e.getMessage(), e.getCause());
+        }
     }
 
     private <R> R parseResponse(RestClient.RequestBodySpec request, Class<R> responseDataType) {
@@ -210,23 +227,23 @@ public class HttpsApiClient {
      *
      * @param function     name of the API function to execute
      * @param functionData data for the function, or {@code null} to not include data in the request
-     * @return raw data
+     * @return input stream containing the raw data
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public byte[] requestRaw(String function, Object functionData) {
-        return rawResponse(createRequest(function, functionData));
+    public InputStream requestRaw(String function, Object functionData) {
+        return getRawResponse(createRequest(function, functionData));
     }
 
     /**
      * Sends a request to the server with no data for the function and reads the response as raw data.
      *
      * @param function name of the API function to execute
-     * @return raw data
+     * @return input stream containing the raw data
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public byte[] requestRaw(String function) {
+    public InputStream requestRaw(String function) {
         return requestRaw(function, null);
     }
 
@@ -288,14 +305,14 @@ public class HttpsApiClient {
      * @param function     name of the API function to execute
      * @param functionData data for the function, or {@code null} to not include data in the request
      * @param partName     name of the other part of the request
-     * @param partData     raw data for the other part of the request
+     * @param partData     input stream containing the raw data for the other part of the request
      * @param responseDataType class to parse the response data into
      * @param <R>              type to return
      * @return response data, or {@code null} if there was none
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public <R> R multipartRequest(String function, Object functionData, String partName, Object partData, Class<R> responseDataType) {
+    public <R> R multipartRequest(String function, Object functionData, String partName, InputStream partData, Class<R> responseDataType) {
         return parseResponse(createMultipartRequest(function, functionData, partName, partData), responseDataType);
     }
 
@@ -304,14 +321,14 @@ public class HttpsApiClient {
      *
      * @param function name of the API function to execute
      * @param partName name of the other part of the request
-     * @param partData raw data for the other part of the request
+     * @param partData input stream containing the raw data for the other part of the request
      * @param responseDataType class to parse the response data into
      * @param <R>              type to return
      * @return response data, or {@code null} if there was none
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public <R> R multipartRequest(String function, String partName, Object partData, Class<R> responseDataType) {
+    public <R> R multipartRequest(String function, String partName, InputStream partData, Class<R> responseDataType) {
         return multipartRequest(function, null, partName, partData, responseDataType);
     }
 
@@ -321,11 +338,11 @@ public class HttpsApiClient {
      * @param function     name of the API function to execute
      * @param functionData data for the function, or {@code null} to not include data in the request
      * @param partName     name of the other part of the request
-     * @param partData     raw data for the other part of the request
+     * @param partData     input stream containing the raw data for the other part of the request
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public void multipartRequest(String function, Object functionData, String partName, Object partData) {
+    public void multipartRequest(String function, Object functionData, String partName, InputStream partData) {
         multipartRequest(function, functionData, partName, partData, Void.class);
     }
 
@@ -334,11 +351,11 @@ public class HttpsApiClient {
      *
      * @param function name of the API function to execute
      * @param partName name of the other part of the request
-     * @param partData raw data for the other part of the request
+     * @param partData input stream containing the raw data for the other part of the request
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public void multipartRequest(String function, String partName, Object partData) {
+    public void multipartRequest(String function, String partName, InputStream partData) {
         multipartRequest(function, null, partName, partData);
     }
 
