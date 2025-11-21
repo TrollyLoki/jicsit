@@ -84,7 +84,7 @@ public class HttpsApi {
      * @throws RequestException      if an error occurs while sending the request
      */
     public void verifyAuthenticationToken() {
-        client.request("VerifyAuthenticationToken");
+        client.request("VerifyAuthenticationToken", null);
     }
 
     /**
@@ -141,7 +141,7 @@ public class HttpsApi {
     public ServerGameState queryServerState() {
         record Schema(ServerGameState serverGameState) {
         }
-        return client.request("QueryServerState", Schema.class).serverGameState;
+        return client.request("QueryServerState", null, Schema.class).serverGameState;
     }
 
     /**
@@ -152,7 +152,7 @@ public class HttpsApi {
      * @throws RequestException if an error occurs while sending the request
      */
     public ServerOptions getServerOptions() {
-        return client.request("GetServerOptions", ServerOptions.class);
+        return client.request("GetServerOptions", null, ServerOptions.class);
     }
 
     /**
@@ -163,7 +163,7 @@ public class HttpsApi {
      * @throws RequestException if an error occurs while sending the request
      */
     public AdvancedGameSettings getAdvancedGameSettings() {
-        return client.request("GetAdvancedGameSettings", AdvancedGameSettings.class);
+        return client.request("GetAdvancedGameSettings", null, AdvancedGameSettings.class);
     }
 
     /**
@@ -298,7 +298,7 @@ public class HttpsApi {
      * @throws RequestException if an error occurs while sending the request
      */
     public void shutdownServer() {
-        client.request("Shutdown");
+        client.request("Shutdown", null);
     }
 
     /**
@@ -376,7 +376,7 @@ public class HttpsApi {
      * @throws RequestException           if an error occurs while sending the request
      */
     public ServerSessions enumerateSessions() {
-        return client.request("EnumerateSessions", ServerSessions.class);
+        return client.request("EnumerateSessions", null, ServerSessions.class);
     }
 
     /**

@@ -236,18 +236,6 @@ public class HttpsApiClient {
     }
 
     /**
-     * Sends a request to the server with no data for the function and reads the response as raw data.
-     *
-     * @param function name of the API function to execute
-     * @return input stream containing the raw data
-     * @throws ApiException     if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
-     */
-    public InputStream requestRaw(String function) {
-        return requestRaw(function, null);
-    }
-
-    /**
      * Sends a request to the server.
      *
      * @param function         name of the API function to execute
@@ -263,20 +251,6 @@ public class HttpsApiClient {
     }
 
     /**
-     * Sends a request to the server with no data for the function.
-     *
-     * @param function         name of the API function to execute
-     * @param responseDataType class to parse the response data into
-     * @param <R>              type to return
-     * @return response data, or {@code null} if there was none
-     * @throws ApiException     if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
-     */
-    public <R> R request(String function, Class<R> responseDataType) {
-        return request(function, null, responseDataType);
-    }
-
-    /**
      * Sends a request to the server expecting no response data.
      *
      * @param function     name of the API function to execute
@@ -286,17 +260,6 @@ public class HttpsApiClient {
      */
     public void request(String function, Object functionData) {
         request(function, functionData, Void.class);
-    }
-
-    /**
-     * Sends a request to the server with no data for the function and also expecting no response data.
-     *
-     * @param function name of the API function to execute
-     * @throws ApiException     if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
-     */
-    public void request(String function) {
-        request(function, (Object) null);
     }
 
     /**
@@ -317,22 +280,6 @@ public class HttpsApiClient {
     }
 
     /**
-     * Sends a multipart request to the server with no data for the function.
-     *
-     * @param function name of the API function to execute
-     * @param partName name of the other part of the request
-     * @param partData input stream containing the raw data for the other part of the request
-     * @param responseDataType class to parse the response data into
-     * @param <R>              type to return
-     * @return response data, or {@code null} if there was none
-     * @throws ApiException     if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
-     */
-    public <R> R multipartRequest(String function, String partName, InputStream partData, Class<R> responseDataType) {
-        return multipartRequest(function, null, partName, partData, responseDataType);
-    }
-
-    /**
      * Sends a multipart request to the server expecting no response data.
      *
      * @param function     name of the API function to execute
@@ -344,19 +291,6 @@ public class HttpsApiClient {
      */
     public void multipartRequest(String function, Object functionData, String partName, InputStream partData) {
         multipartRequest(function, functionData, partName, partData, Void.class);
-    }
-
-    /**
-     * Sends a multipart request to the server with no data for the function and also expecting no response data.
-     *
-     * @param function name of the API function to execute
-     * @param partName name of the other part of the request
-     * @param partData input stream containing the raw data for the other part of the request
-     * @throws ApiException     if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
-     */
-    public void multipartRequest(String function, String partName, InputStream partData) {
-        multipartRequest(function, null, partName, partData);
     }
 
     /**
@@ -376,19 +310,6 @@ public class HttpsApiClient {
         if (newToken != null && !newToken.isEmpty()) {
             token = newToken;
         }
-    }
-
-    /**
-     * Sends a request to the server with no data for the function and also expecting a new authentication token in response.
-     * <p>
-     * Upon success, the current authentication token is updated for use by subsequent requests.
-     *
-     * @param function name of the API function to execute
-     * @throws ApiException     if an API error occurs
-     * @throws RequestException if an error occurs while sending the request
-     */
-    public void requestToken(String function) {
-        requestToken(function, null);
     }
 
 }
