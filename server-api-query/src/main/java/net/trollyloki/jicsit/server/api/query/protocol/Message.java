@@ -1,12 +1,11 @@
 package net.trollyloki.jicsit.server.api.query.protocol;
 
 import net.trollyloki.jicsit.server.api.query.ProtocolException;
-import net.trollyloki.jicsit.server.api.query.protocol.payload.CookiePayload;
 import net.trollyloki.jicsit.server.api.query.protocol.payload.RawPayload;
-import net.trollyloki.jicsit.server.api.query.protocol.payload.ServerStatePayload;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Map;
 
 /**
  * A message.
@@ -20,16 +19,6 @@ public record Message(byte type, Payload payload) {
     private static final byte TERMINATOR = 0x1;
 
     private static final byte PROTOCOL_VERSION = 1;
-
-    /**
-     * A request sent to the server to retrieve information about the current server state.
-     */
-    public static final byte POLL_SERVER_STATE = 0;
-
-    /**
-     * A response sent by the server containing the current server state.
-     */
-    public static final byte SERVER_STATE_RESPONSE = 1;
 
     /**
      * Writes the message to a buffer.
@@ -52,11 +41,12 @@ public record Message(byte type, Payload payload) {
      * Reads a message from a buffer.
      *
      * @param buffer byte buffer
+     * @param payloadReaders map of message types to payload readers
      * @return message
      * @throws ProtocolException                 if there is a protocol error
      * @throws java.nio.BufferUnderflowException if the buffer does not contain the expected amount of data
      */
-    public static Message read(ByteBuffer buffer) throws ProtocolException {
+    public static Message read(ByteBuffer buffer, Map<Byte, PayloadReader<?>> payloadReaders) throws ProtocolException {
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         short magic = buffer.getShort();
@@ -65,17 +55,14 @@ public record Message(byte type, Payload payload) {
         }
 
         byte type = buffer.get();
+        PayloadReader<?> payloadReader = payloadReaders.getOrDefault(type, RawPayload::read);
 
         byte protocolVersion = buffer.get();
         if (protocolVersion != PROTOCOL_VERSION) {
             throw new ProtocolException("Incorrect protocol version: " + protocolVersion);
         }
 
-        Payload payload = switch (type) {
-            case POLL_SERVER_STATE -> CookiePayload.read(buffer);
-            case SERVER_STATE_RESPONSE -> ServerStatePayload.read(buffer);
-            default -> RawPayload.read(buffer);
-        };
+        Payload payload = payloadReader.read(buffer);
 
         byte terminator = buffer.get();
         if (terminator != TERMINATOR) {

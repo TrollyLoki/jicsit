@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server.api.query;
 
 import net.trollyloki.jicsit.server.api.query.protocol.Message;
+import net.trollyloki.jicsit.server.api.query.protocol.PayloadReader;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.util.Map;
 
 /**
  * A client for the dedicated server Lightweight Query API.
@@ -117,18 +119,19 @@ public class LightweightQueryApiClient implements Closeable {
     /**
      * Attempts to receive a message from the server.
      *
+     * @param payloadReaders map of message types to payload readers
      * @return message
      * @throws java.nio.BufferUnderflowException if the message did not fit within the {@link #getBufferSize() buffer size}
      * @throws java.net.SocketTimeoutException   if the {@link #getTimeout() timeout} expires
      * @throws ProtocolException                 if a protocol error occurs
      * @throws IOException                       if an I/O error occurs or the socket is closed
      */
-    public Message receive() throws IOException {
+    public Message receive(Map<Byte, PayloadReader<?>> payloadReaders) throws IOException {
         ByteBuffer buffer = newBuffer();
         DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.capacity());
         socket.receive(packet);
         buffer.limit(packet.getLength());
-        return Message.read(buffer);
+        return Message.read(buffer, payloadReaders);
     }
 
 }
