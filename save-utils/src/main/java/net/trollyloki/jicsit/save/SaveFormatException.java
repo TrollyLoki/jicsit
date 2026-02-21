@@ -16,4 +16,14 @@ public class SaveFormatException extends IOException {
         super(message);
     }
 
+    /**
+     * Creates a new save format exception with the specified detail message and cause.
+     *
+     * @param message detail message
+     * @param cause   cause
+     */
+    public SaveFormatException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

@@ -1,5 +1,9 @@
 package net.trollyloki.jicsit.save;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.trollyloki.jicsit.save.modded.ModMetadata;
+
 /**
  * Information about a save file.
  *
@@ -18,5 +22,25 @@ public record SaveFileInfo(
         int modFlags,
         String identifier
 ) {
+
+    private static final ObjectMapper MOD_METADATA_MAPPER = new ObjectMapper();
+
+    /**
+     * Attempts to parse the mod metadata.
+     *
+     * @return parsed mod metadata, or {@code null} if the save is unmodded
+     * @throws SaveFormatException if the mod metadata is invalid
+     * @see #modMetadata()
+     */
+    public ModMetadata parseModMetadata() throws SaveFormatException {
+        if (modMetadata.isEmpty())
+            return null;
+
+        try {
+            return MOD_METADATA_MAPPER.readValue(modMetadata, ModMetadata.class);
+        } catch (JsonProcessingException e) {
+            throw new SaveFormatException("Invalid mod metadata", e);
+        }
+    }
 
 }
