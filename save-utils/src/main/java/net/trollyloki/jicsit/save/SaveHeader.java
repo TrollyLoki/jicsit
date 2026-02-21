@@ -50,7 +50,7 @@ public record SaveHeader(
     /**
      * Attempts to parse individual map options out of the map options string.
      *
-     * @return parsed map options, may be empty
+     * @return parsed map options
      * @see #mapOptions()
      */
     public Map<String, String> parseMapOptions() {
@@ -58,8 +58,13 @@ public record SaveHeader(
         if (mapOptions != null) {
             for (String property : mapOptions.split("\\?")) {
                 if (property.isEmpty()) continue;
-                String[] split = property.split("=");
-                map.put(split[0], split.length > 1 ? split[1] : null);
+
+                int splitAt = property.indexOf('=');
+                if (splitAt < 0) {
+                    map.put(property, null);
+                } else {
+                    map.put(property.substring(0, splitAt), property.substring(splitAt + 1));
+                }
             }
         }
         return map;
