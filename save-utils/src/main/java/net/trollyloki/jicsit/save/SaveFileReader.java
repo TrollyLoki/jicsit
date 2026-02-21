@@ -36,26 +36,27 @@ public final class SaveFileReader {
     }
 
     /**
-     * Reads a save file's header information.
+     * Reads information about a save file.
      *
      * @param file save file
-     * @return {@link SaveHeader}
+     * @return {@link SaveFileInfo}
      * @throws IOException if an error occurs
+     * @see #readInfo(InputStream)
      */
-    public static SaveHeader readHeader(File file) throws IOException {
+    public static SaveFileInfo readInfo(File file) throws IOException {
         try (FileInputStream stream = new FileInputStream(file)) {
-            return readHeader(stream);
+            return readInfo(stream);
         }
     }
 
     /**
-     * Reads a save file's header information.
+     * Reads information about a save file.
      *
-     * @param stream stream containing the save data
-     * @return {@link SaveHeader}
+     * @param stream stream containing the save file data
+     * @return {@link SaveFileInfo}
      * @throws IOException if an error occurs
      */
-    public static SaveHeader readHeader(InputStream stream) throws IOException {
+    public static SaveFileInfo readInfo(InputStream stream) throws IOException {
 
         int headerVersion = readInt(stream);
         if (headerVersion < 0 || headerVersion > 14) {
@@ -98,7 +99,7 @@ public final class SaveFileReader {
             }
         }
 
-        return new SaveHeader(
+        SaveHeader header = new SaveHeader(
                 saveVersion,
                 buildVersion,
                 saveName,
@@ -110,6 +111,14 @@ public final class SaveFileReader {
                 modFlags != 0,
                 !Arrays.equals(hash, checksum),
                 cheatFlag != 0
+        );
+        return new SaveFileInfo(
+                header,
+                visibility,
+                objectVersion,
+                modMetadata,
+                modFlags,
+                identifier
         );
     }
 

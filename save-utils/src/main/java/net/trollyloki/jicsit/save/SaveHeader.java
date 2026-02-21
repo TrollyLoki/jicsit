@@ -9,17 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A save file's header information.
+ * Basic information about a save.
  *
  * @param saveVersion                   save game format version
- * @param buildVersion                  build version of the game/server the file was saved by
- * @param saveName                      name of the save file (without the extension)
- * @param mapName                       path name to the map package the save is based on
- * @param mapOptions                    additional map URL options
- * @param sessionName                   name of the session the save belongs to
- * @param playDurationSeconds           amount of seconds the game has been running for in total since the session was created
- * @param saveDateTime                  instant when the save was made
- * @param isModded                      {@code true} if the file was saved with mods
+ * @param buildVersion                  build version of the game/server that created the save
+ * @param saveName                      name of the save (without any file extension)
+ * @param mapName                       name of the map used by the save
+ * @param mapOptions                    additional {@link #parseMapOptions() map options}
+ * @param sessionName                   name of the session that the save belongs to
+ * @param playDurationSeconds           amount of time that the session has been running for in total
+ * @param saveDateTime                  instant when the save was created
+ * @param isModded                      {@code true} if the save has been modded
  * @param isEdited                      {@code true} if the save has been edited by third party tools
  * @param isAdvancedGameSettingsEnabled {@code true} if Advanced Game Settings are enabled for the save
  */
