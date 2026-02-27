@@ -84,11 +84,22 @@ public final class SaveFileReader {
         int modFlags = readInt(stream);
         String guid = readString(stream);
 
-        if (headerVersion >= 11) stream.skipNBytes(4); // isPartitionedWorld
+        if (headerVersion >= 11) {
+            int isPartitionedWorld = readInt(stream); // always 1
+            if (isPartitionedWorld != 1) {
+                throw new SaveFormatException("Invalid isPartitionedWorld value: " + isPartitionedWorld);
+            }
+        }
 
         byte[] checksum = headerVersion >= 12 ? readMD5Hash(stream) : null; // MD5 hash of all data after the header
 
-        int isCreativeModeEnabled = headerVersion >= 13 ? readInt(stream) : 0;
+        int isCreativeModeEnabled = 0;
+        if (headerVersion >= 13) {
+            isCreativeModeEnabled = readInt(stream);
+            if (!(isCreativeModeEnabled == 0 || isCreativeModeEnabled == 1)) {
+                throw new SaveFormatException("Invalid isCreativeModeEnabled value: " + isCreativeModeEnabled);
+            }
+        }
 
         byte[] hash = null;
         if (checksum != null) {
@@ -154,7 +165,7 @@ public final class SaveFileReader {
         String string = new String(stream.readNBytes(length), charset);
 
         if (!string.endsWith("\0")) {
-            throw new SaveFormatException("Incorrect string terminator");
+            throw new SaveFormatException("Invalid null terminator: " + string.charAt(string.length() - 1));
         }
 
         return string.substring(0, string.length() - 1);
