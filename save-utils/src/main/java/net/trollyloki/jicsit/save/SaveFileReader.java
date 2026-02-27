@@ -24,6 +24,8 @@ public final class SaveFileReader {
     }
 
     private static final Instant TICKS_ORIGIN = ZonedDateTime.of(1, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC).toInstant();
+    private static final long TICKS_PER_MILLIS = 10_000;
+    private static final long NANOS_PER_TICK = 1_000_000 / TICKS_PER_MILLIS;
 
     /**
      * Converts a .NET <a href="https://learn.microsoft.com/en-us/dotnet/api/system.datetime.ticks">DateTime.Ticks</a>
@@ -33,7 +35,9 @@ public final class SaveFileReader {
      * @return instant
      */
     public static Instant ticksToInstant(long ticks) {
-        return TICKS_ORIGIN.plusMillis(ticks / 10000).plusNanos((ticks % 10000) * 100);
+        return TICKS_ORIGIN
+                .plusMillis(ticks / TICKS_PER_MILLIS)
+                .plusNanos((ticks % TICKS_PER_MILLIS) * NANOS_PER_TICK);
     }
 
     /**
