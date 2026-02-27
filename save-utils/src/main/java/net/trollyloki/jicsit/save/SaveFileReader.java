@@ -85,14 +85,10 @@ public final class SaveFileReader {
         String guid = readString(stream);
 
         if (headerVersion >= 11) stream.skipNBytes(4); // isPartitionedWorld
-        if (headerVersion >= 13) stream.skipNBytes(4); // isCreativeModeEnabled
 
-        byte[] checksum = null; // MD5 hash of all data after the header
-        if (headerVersion >= 12) {
-            checksum = stream.readNBytes(16);
-        }
+        byte[] checksum = headerVersion >= 12 ? readMD5Hash(stream) : null; // MD5 hash of all data after the header
 
-        int cheatFlag = headerVersion >= 13 ? readInt(stream) : 0; // not sure which header version added this
+        int isCreativeModeEnabled = headerVersion >= 13 ? readInt(stream) : 0;
 
         byte[] hash = null;
         if (checksum != null) {
@@ -115,7 +111,7 @@ public final class SaveFileReader {
                 saveTimestamp,
                 modFlags != 0,
                 !Arrays.equals(hash, checksum),
-                cheatFlag != 0
+                isCreativeModeEnabled != 0
         );
         return new SaveFileInfo(
                 headerVersion,
@@ -162,6 +158,16 @@ public final class SaveFileReader {
         }
 
         return string.substring(0, string.length() - 1);
+    }
+
+    private static byte[] readMD5Hash(InputStream stream) throws IOException {
+        int isValid = readInt(stream); // always 1
+
+        if (isValid != 1) {
+            throw new SaveFormatException("Invalid MD5Hash: " + isValid);
+        }
+
+        return stream.readNBytes(16);
     }
 
 }
