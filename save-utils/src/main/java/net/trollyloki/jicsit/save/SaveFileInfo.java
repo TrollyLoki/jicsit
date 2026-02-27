@@ -7,20 +7,22 @@ import net.trollyloki.jicsit.save.modded.ModMetadata;
 /**
  * Information about a save file.
  *
- * @param header        {@link SaveHeader}
- * @param visibility    session visibility (irrelevant since 1.0)
- * @param objectVersion editor object version
- * @param modMetadata   mod metadata, or an empty string if the save is unmodded
- * @param modFlags      mod flags, or {@code 0} if the save is unmodded
- * @param identifier    GUID for the session (regenerated only when creating a new game)
+ * @param headerVersion       save header format version
+ * @param header              {@link SaveHeader}
+ * @param sessionVisibility   session visibility (ignored since 1.0)
+ * @param editorObjectVersion editor object version
+ * @param modMetadata         mod metadata
+ * @param modFlags            mod flags, or {@code 0} if the save is unmodded
+ * @param guid                GUID for the session (regenerated only when creating a new game)
  */
 public record SaveFileInfo(
+        int headerVersion,
         SaveHeader header,
-        byte visibility,
-        int objectVersion,
+        byte sessionVisibility,
+        int editorObjectVersion,
         String modMetadata,
         int modFlags,
-        String identifier
+        String guid
 ) {
 
     private static final ObjectMapper MOD_METADATA_MAPPER = new ObjectMapper();

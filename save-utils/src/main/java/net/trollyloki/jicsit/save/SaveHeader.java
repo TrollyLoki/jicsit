@@ -17,8 +17,8 @@ import java.util.Map;
  * @param mapName                       name of the map used by the save
  * @param mapOptions                    additional {@link #parseMapOptions() map options}
  * @param sessionName                   name of the session that the save belongs to
- * @param playDurationSeconds           amount of time that the session has been running for in total
- * @param saveDateTime                  instant when the save was created
+ * @param playDuration                  amount of time that the session has been running for in total
+ * @param saveTimestamp                 instant when the save was created
  * @param isModded                      {@code true} if the save has been modded
  * @param isEdited                      {@code true} if the save has been edited by third party tools
  * @param isAdvancedGameSettingsEnabled {@code true} if Advanced Game Settings are enabled for the save
@@ -30,22 +30,12 @@ public record SaveHeader(
         String mapName,
         String mapOptions,
         String sessionName,
-        int playDurationSeconds,
-        @JsonFormat(pattern = "yyyy.MM.dd-HH.mm.ss", timezone = "UTC") Instant saveDateTime,
+        @JsonProperty("playDurationSeconds") Duration playDuration,
+        @JsonProperty("saveDateTime") @JsonFormat(pattern = "yyyy.MM.dd-HH.mm.ss", timezone = "UTC") Instant saveTimestamp,
         @JsonProperty("isModdedSave") boolean isModded,
         @JsonProperty("isEditedSave") boolean isEdited,
         @JsonProperty("isCreativeModeEnabled") boolean isAdvancedGameSettingsEnabled
 ) {
-
-    /**
-     * Gets the duration the game has been running for in total since the session was created.
-     *
-     * @return play duration
-     * @see #playDurationSeconds()
-     */
-    public Duration playDuration() {
-        return Duration.ofSeconds(playDurationSeconds);
-    }
 
     /**
      * Attempts to parse individual map options out of the map options string.

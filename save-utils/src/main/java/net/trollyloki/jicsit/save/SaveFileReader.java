@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -71,13 +72,13 @@ public final class SaveFileReader {
         String mapName = readString(stream);
         String mapOptions = readString(stream);
         String sessionName = readString(stream);
-        int playDurationSeconds = readInt(stream);
-        Instant saveDateTime = ticksToInstant(readLong(stream));
-        byte visibility = readByte(stream);
-        int objectVersion = readInt(stream);
+        Duration playDuration = Duration.ofSeconds(readInt(stream));
+        Instant saveTimestamp = ticksToInstant(readLong(stream));
+        byte sessionVisibility = readByte(stream);
+        int editorObjectVersion = readInt(stream);
         String modMetadata = readString(stream);
         int modFlags = readInt(stream);
-        String identifier = readString(stream);
+        String guid = readString(stream);
 
         if (headerVersion >= 11) stream.skipNBytes(4); // isPartitionedWorld
         if (headerVersion >= 13) stream.skipNBytes(4); // isCreativeModeEnabled
@@ -106,19 +107,20 @@ public final class SaveFileReader {
                 mapName,
                 mapOptions,
                 sessionName,
-                playDurationSeconds,
-                saveDateTime,
+                playDuration,
+                saveTimestamp,
                 modFlags != 0,
                 !Arrays.equals(hash, checksum),
                 cheatFlag != 0
         );
         return new SaveFileInfo(
+                headerVersion,
                 header,
-                visibility,
-                objectVersion,
+                sessionVisibility,
+                editorObjectVersion,
                 modMetadata,
                 modFlags,
-                identifier
+                guid
         );
     }
 
