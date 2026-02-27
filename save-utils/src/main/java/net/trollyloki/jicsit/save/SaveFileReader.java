@@ -1,13 +1,13 @@
 package net.trollyloki.jicsit.save;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -38,13 +38,13 @@ public final class SaveFileReader {
     /**
      * Reads information about a save file.
      *
-     * @param file save file
+     * @param filePath save file path
      * @return {@link SaveFileInfo}
      * @throws IOException if an error occurs
      * @see #readInfo(InputStream)
      */
-    public static SaveFileInfo readInfo(File file) throws IOException {
-        try (FileInputStream stream = new FileInputStream(file)) {
+    public static SaveFileInfo readInfo(Path filePath) throws IOException {
+        try (InputStream stream = Files.newInputStream(filePath)) {
             return readInfo(stream);
         }
     }
