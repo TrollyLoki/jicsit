@@ -64,9 +64,9 @@ public final class SaveFileReader {
     public static SaveFileInfo readInfo(InputStream stream) throws IOException {
 
         int headerVersion = readInt(stream);
-        if (headerVersion < 0 || headerVersion > 14) {
-            throw new SaveFormatException("Unknown header version: " + headerVersion);
-        } else if (headerVersion < 10) {
+        if (headerVersion < 0) {
+            throw new SaveFormatException("Invalid header version: " + headerVersion);
+        } else if (headerVersion < 5) {
             throw new SaveFormatException("Unsupported header version: " + headerVersion);
         }
 
@@ -79,10 +79,10 @@ public final class SaveFileReader {
         Duration playDuration = Duration.ofSeconds(readInt(stream));
         Instant saveTimestamp = ticksToInstant(readLong(stream));
         byte sessionVisibility = readByte(stream);
-        int editorObjectVersion = readInt(stream);
-        String modMetadata = readString(stream);
-        int modFlags = readInt(stream);
-        String guid = readString(stream);
+        int editorObjectVersion = headerVersion >= 7 ? readInt(stream) : 0;
+        String modMetadata = headerVersion >= 8 ? readString(stream) : null;
+        int modFlags = headerVersion >= 8 ? readInt(stream) : 0;
+        String guid = headerVersion >= 10 ? readString(stream) : null;
 
         if (headerVersion >= 11) {
             int isPartitionedWorld = readInt(stream); // always 1

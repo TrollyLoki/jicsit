@@ -10,10 +10,10 @@ import net.trollyloki.jicsit.save.modded.ModMetadata;
  * @param headerVersion       save header format version
  * @param header              {@link SaveHeader}
  * @param sessionVisibility   session visibility (ignored since 1.0)
- * @param editorObjectVersion editor object version
- * @param modMetadata         mod metadata
+ * @param editorObjectVersion editor object version, or {@code 0} if unknown
+ * @param modMetadata         mod metadata, or {@code null} if unknown
  * @param modFlags            mod flags, or {@code 0} if the save is unmodded
- * @param guid                GUID for the session (regenerated only when creating a new game)
+ * @param guid                GUID for the session (regenerated only when creating a new game), or {@code null} if unknown
  */
 public record SaveFileInfo(
         int headerVersion,
