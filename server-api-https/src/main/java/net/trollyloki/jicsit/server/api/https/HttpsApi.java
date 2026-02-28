@@ -46,7 +46,11 @@ public class HttpsApi {
      * @throws IllegalArgumentException if the current authentication token is invalid
      */
     public PrivilegeLevel getPrivilegeLevel() {
-        return client.getPrivilegeLevel();
+        String token = client.getToken();
+        if (token == null)
+            return PrivilegeLevel.NOT_AUTHENTICATED;
+        else
+            return PrivilegeLevel.ofToken(token);
     }
 
     /**

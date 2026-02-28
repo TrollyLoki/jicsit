@@ -122,7 +122,7 @@ public class HttpsApiClient {
     }
 
     /**
-     * Sets the current authentication token used for all requests.
+     * Sets the current authentication token.
      *
      * @param token authentication token, or {@code null} to make unauthenticated requests
      */
@@ -131,16 +131,12 @@ public class HttpsApiClient {
     }
 
     /**
-     * Gets the privilege level granted by the current authentication token.
-     * <p>
-     * {@link PrivilegeLevel#API_TOKEN} allows the client to execute all functions.
+     * Gets the current authentication token.
      *
-     * @return {@link PrivilegeLevel}, {@link PrivilegeLevel#NOT_AUTHENTICATED} if no token is set
-     * @throws IllegalArgumentException if the current authentication token is invalid
+     * @return authentication token, or {@code null} if making unauthenticated requests
      */
-    public PrivilegeLevel getPrivilegeLevel() {
-        if (token == null) return PrivilegeLevel.NOT_AUTHENTICATED;
-        return PrivilegeLevel.ofToken(token);
+    public String getToken() {
+        return token;
     }
 
     private Map<String, Object> createRequestBody(String function, Object functionData) {
