@@ -1,5 +1,7 @@
 package net.trollyloki.jicsit.save;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -19,6 +21,7 @@ import java.util.Arrays;
 /**
  * Utility class for reading save files.
  */
+@NullMarked
 public final class SaveFileReader {
     private SaveFileReader() {
     }
@@ -40,28 +43,53 @@ public final class SaveFileReader {
                 .plusNanos((ticks % TICKS_PER_MILLIS) * NANOS_PER_TICK);
     }
 
+    private static final String FILE_EXTENSION = ".sav";
+
+    /**
+     * Gets the save name displayed for a save file.
+     * <p>
+     * <strong>Note:</strong> The game ignores any files that do not have the ".sav" file extension.
+     *
+     * @param filePath save file path
+     * @return save name
+     * @throws IllegalArgumentException if the save file path is empty
+     */
+    public static String saveNameOf(Path filePath) {
+        Path filenamePath = filePath.getFileName();
+        if (filenamePath == null) {
+            throw new IllegalArgumentException("Save file path cannot be empty");
+        }
+        String filename = filenamePath.toString();
+
+        if (filename.endsWith(FILE_EXTENSION)) {
+            return filename.substring(0, filename.length() - FILE_EXTENSION.length());
+        }
+        return filename;
+    }
+
     /**
      * Reads information about a save file.
      *
      * @param filePath save file path
      * @return {@link SaveFileInfo}
      * @throws IOException if an error occurs
-     * @see #readInfo(InputStream)
+     * @see #readInfo(String, InputStream)
      */
     public static SaveFileInfo readInfo(Path filePath) throws IOException {
         try (InputStream stream = Files.newInputStream(filePath)) {
-            return readInfo(stream);
+            return readInfo(saveNameOf(filePath), stream);
         }
     }
 
     /**
      * Reads information about a save file.
      *
+     * @param saveName {@link SaveHeader#saveName() save name}
      * @param stream stream containing the save file data
      * @return {@link SaveFileInfo}
      * @throws IOException if an error occurs
      */
-    public static SaveFileInfo readInfo(InputStream stream) throws IOException {
+    public static SaveFileInfo readInfo(String saveName, InputStream stream) throws IOException {
 
         int headerVersion = readInt(stream);
         if (headerVersion < 0) {
@@ -72,7 +100,7 @@ public final class SaveFileReader {
 
         int saveVersion = readInt(stream);
         int buildVersion = readInt(stream);
-        String saveName = headerVersion >= 14 ? readString(stream) : null;
+        String originalSaveName = headerVersion >= 14 ? readString(stream) : null;
         String mapName = readString(stream);
         String mapOptions = readString(stream);
         String sessionName = readString(stream);
@@ -127,6 +155,7 @@ public final class SaveFileReader {
         return new SaveFileInfo(
                 headerVersion,
                 header,
+                originalSaveName,
                 sessionVisibility,
                 editorObjectVersion,
                 modMetadata,
