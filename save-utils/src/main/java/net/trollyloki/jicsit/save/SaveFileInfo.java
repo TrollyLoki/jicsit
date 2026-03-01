@@ -2,7 +2,6 @@ package net.trollyloki.jicsit.save;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.trollyloki.jicsit.save.modded.ModMetadata;
 
 /**
  * Information about a save file.

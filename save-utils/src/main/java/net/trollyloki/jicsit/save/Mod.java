@@ -1,4 +1,4 @@
-package net.trollyloki.jicsit.save.modded;
+package net.trollyloki.jicsit.save;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
