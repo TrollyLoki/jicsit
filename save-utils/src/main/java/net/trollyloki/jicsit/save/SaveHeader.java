@@ -2,6 +2,7 @@ package net.trollyloki.jicsit.save;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,6 +24,7 @@ import java.util.Map;
  * @param isEdited                      {@code true} if the save has been edited by third party tools
  * @param isAdvancedGameSettingsEnabled {@code true} if Advanced Game Settings are enabled for the save
  */
+@NullMarked
 public record SaveHeader(
         int saveVersion,
         int buildVersion,
@@ -45,16 +47,14 @@ public record SaveHeader(
      */
     public Map<String, String> parseMapOptions() {
         Map<String, String> map = new HashMap<>();
-        if (mapOptions != null) {
-            for (String property : mapOptions.split("\\?")) {
-                if (property.isEmpty()) continue;
+        for (String property : mapOptions.split("\\?")) {
+            if (property.isEmpty()) continue;
 
-                int splitAt = property.indexOf('=');
-                if (splitAt < 0) {
-                    map.put(property, null);
-                } else {
-                    map.put(property.substring(0, splitAt), property.substring(splitAt + 1));
-                }
+            int splitAt = property.indexOf('=');
+            if (splitAt < 0) {
+                map.put(property, ""); // no value
+            } else {
+                map.put(property.substring(0, splitAt), property.substring(splitAt + 1));
             }
         }
         return map;
