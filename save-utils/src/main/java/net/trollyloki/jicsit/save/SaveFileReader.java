@@ -135,12 +135,20 @@ public final class SaveFileReader {
         );
     }
 
+    private static byte[] readNBytesOrFail(InputStream stream, int len) throws IOException {
+        byte[] bytes = stream.readNBytes(len);
+        if (bytes.length < len) {
+            throw new SaveFormatException("Unexpected end of file");
+        }
+        return bytes;
+    }
+
     private static ByteBuffer buffer(InputStream stream, int len) throws IOException {
-        return ByteBuffer.allocateDirect(len).put(stream.readNBytes(len)).rewind().order(ByteOrder.LITTLE_ENDIAN);
+        return ByteBuffer.allocateDirect(len).put(readNBytesOrFail(stream, len)).rewind().order(ByteOrder.LITTLE_ENDIAN);
     }
 
     private static byte readByte(InputStream stream) throws IOException {
-        return stream.readNBytes(1)[0];
+        return readNBytesOrFail(stream, 1)[0];
     }
 
     private static int readInt(InputStream stream) throws IOException {
@@ -162,7 +170,7 @@ public final class SaveFileReader {
             length *= -2;
         }
 
-        String string = new String(stream.readNBytes(length), charset);
+        String string = new String(readNBytesOrFail(stream, length), charset);
 
         if (!string.endsWith("\0")) {
             throw new SaveFormatException("Invalid null terminator: " + string.charAt(string.length() - 1));
@@ -178,7 +186,7 @@ public final class SaveFileReader {
             throw new SaveFormatException("Invalid MD5Hash: " + isValid);
         }
 
-        return stream.readNBytes(16);
+        return readNBytesOrFail(stream, 16);
     }
 
 }
