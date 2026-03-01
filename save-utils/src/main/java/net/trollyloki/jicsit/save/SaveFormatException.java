@@ -12,7 +12,7 @@ public class SaveFormatException extends IOException {
      *
      * @param message detail message
      */
-    public SaveFormatException(String message) {
+    SaveFormatException(String message) {
         super(message);
     }
 
@@ -22,7 +22,7 @@ public class SaveFormatException extends IOException {
      * @param message detail message
      * @param cause   cause
      */
-    public SaveFormatException(String message, Throwable cause) {
+    SaveFormatException(String message, Throwable cause) {
         super(message, cause);
     }
 
