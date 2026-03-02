@@ -96,6 +96,8 @@ public final class SaveFileReader {
             throw new SaveFormatException("Invalid header version: " + headerVersion);
         } else if (headerVersion < 5) {
             throw new SaveFormatException("Unsupported header version: " + headerVersion);
+        } else if (headerVersion > 14) {
+            throw new SaveFormatException("Unknown header version: " + headerVersion);
         }
 
         int saveVersion = readInt(stream);
