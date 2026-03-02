@@ -1,5 +1,7 @@
 package net.trollyloki.jicsit.server.api.query;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * A sequential counter that is incremented by the server each time a state of the relevant system changes.
  * <p>
@@ -17,6 +19,7 @@ package net.trollyloki.jicsit.server.api.query;
  * @param id      ID of the substate being changed
  * @param version current changelist of the substate
  */
+@NullMarked
 public record ServerSubState(byte id, short version) {
 
     /**

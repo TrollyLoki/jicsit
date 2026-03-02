@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server.api.query.protocol.payload;
 
 import net.trollyloki.jicsit.server.api.query.protocol.Payload;
+import org.jspecify.annotations.NullMarked;
 
 import java.nio.ByteBuffer;
 
@@ -9,6 +10,7 @@ import java.nio.ByteBuffer;
  *
  * @param data payload data
  */
+@NullMarked
 public record RawPayload(byte[] data) implements Payload {
 
     @Override

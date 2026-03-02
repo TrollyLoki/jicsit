@@ -2,6 +2,7 @@ package net.trollyloki.jicsit.server.api.query.protocol;
 
 import net.trollyloki.jicsit.server.api.query.ProtocolException;
 import net.trollyloki.jicsit.server.api.query.protocol.payload.RawPayload;
+import org.jspecify.annotations.NullMarked;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -13,6 +14,7 @@ import java.util.Map;
  * @param type    message type ID
  * @param payload payload
  */
+@NullMarked
 public record Message(byte type, Payload payload) {
 
     private static final short PROTOCOL_MAGIC = (short) 0xF6D5;

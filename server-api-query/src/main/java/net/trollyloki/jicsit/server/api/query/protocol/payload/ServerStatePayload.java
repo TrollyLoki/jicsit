@@ -4,6 +4,7 @@ import net.trollyloki.jicsit.server.api.query.ServerState;
 import net.trollyloki.jicsit.server.api.query.ServerStatus;
 import net.trollyloki.jicsit.server.api.query.ServerSubState;
 import net.trollyloki.jicsit.server.api.query.protocol.Payload;
+import org.jspecify.annotations.NullMarked;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +16,7 @@ import java.util.List;
  * @param cookie unique identifier for the request
  * @param state  server state
  */
+@NullMarked
 public record ServerStatePayload(long cookie, ServerState state) implements Payload {
 
     @Override

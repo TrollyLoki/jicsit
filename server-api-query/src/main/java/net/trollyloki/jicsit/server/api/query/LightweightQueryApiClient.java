@@ -2,6 +2,7 @@ package net.trollyloki.jicsit.server.api.query;
 
 import net.trollyloki.jicsit.server.api.query.protocol.Message;
 import net.trollyloki.jicsit.server.api.query.protocol.PayloadReader;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.Map;
 /**
  * A client for the dedicated server Lightweight Query API.
  */
+@NullMarked
 public class LightweightQueryApiClient implements Closeable {
 
     private final InetSocketAddress address;

@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.query;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * A state that a server can be in.
  */
+@NullMarked
 public enum ServerStatus {
 
     /**

@@ -4,6 +4,7 @@ import net.trollyloki.jicsit.server.api.query.protocol.Message;
 import net.trollyloki.jicsit.server.api.query.protocol.PayloadReader;
 import net.trollyloki.jicsit.server.api.query.protocol.payload.CookiePayload;
 import net.trollyloki.jicsit.server.api.query.protocol.payload.ServerStatePayload;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * An interface for the standard Lightweight Query API flow.
  */
+@NullMarked
 public class LightweightQueryApi {
 
     /**

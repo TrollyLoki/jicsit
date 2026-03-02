@@ -1,5 +1,7 @@
 package net.trollyloki.jicsit.server.api.query;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.List;
 
 /**
@@ -11,6 +13,7 @@ import java.util.List;
  * @param subStates list of {@link ServerSubState substates}
  * @param name      server name
  */
+@NullMarked
 public record ServerState(ServerStatus status, int build, long flags, List<ServerSubState> subStates, String name) {
 
     /**

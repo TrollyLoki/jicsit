@@ -1,5 +1,7 @@
 package net.trollyloki.jicsit.server.api.query.protocol;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -7,6 +9,7 @@ import java.nio.ByteBuffer;
  *
  * @param <T> payload type
  */
+@NullMarked
 @FunctionalInterface
 public interface PayloadReader<T extends Payload> {
 
