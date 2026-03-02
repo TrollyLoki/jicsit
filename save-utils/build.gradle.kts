@@ -1,5 +1,6 @@
 plugins {
     id("java-common-conventions")
+    `java-test-fixtures`
     `maven-publish`
 }
 
