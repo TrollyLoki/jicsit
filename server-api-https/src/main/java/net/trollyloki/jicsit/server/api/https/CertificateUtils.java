@@ -75,9 +75,6 @@ public final class CertificateUtils {
 
     /**
      * Gets the fingerprint of a server that is displayed by the game.
-     * <p>
-     * This is equivalent to calling {@link #getFingerprint(Certificate)}
-     * with the first certificate returned by {@link #getServerCertificates(String, int)}.
      *
      * @param host server hostname
      * @param port server port
@@ -101,7 +98,7 @@ public final class CertificateUtils {
      * @throws UnknownHostException     if {@code host} is not known
      * @throws IllegalArgumentException if {@code port} is invalid
      */
-    public static Certificate[] getServerCertificates(String host, int port) throws IOException {
+    private static Certificate[] getServerCertificates(String host, int port) throws IOException {
         try {
 
             SSLContext sslContext = SSLContext.getInstance("TLS");
