@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server.api.https.trustmanager;
 
 import net.trollyloki.jicsit.server.api.https.CertificateUtils;
+import org.jspecify.annotations.NonNull;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.X509ExtendedTrustManager;
@@ -20,7 +21,7 @@ import java.util.Set;
  */
 public class FingerprintBasedTrustManager extends X509ExtendedTrustManager {
 
-    private final Set<String> fingerprints;
+    private final @NonNull Set<String> fingerprints;
 
     /**
      * Creates a new fingerprint-based trust manager.
@@ -32,7 +33,7 @@ public class FingerprintBasedTrustManager extends X509ExtendedTrustManager {
      *
      * @param fingerprints collection of trusted certificate fingerprints
      */
-    public FingerprintBasedTrustManager(Collection<String> fingerprints) {
+    public FingerprintBasedTrustManager(@NonNull Collection<String> fingerprints) {
         this.fingerprints = new HashSet<>(fingerprints);
     }
 

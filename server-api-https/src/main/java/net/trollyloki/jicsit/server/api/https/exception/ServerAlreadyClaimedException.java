@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
 import net.trollyloki.jicsit.server.api.https.HttpsApi;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The server has already been claimed.
@@ -8,6 +9,7 @@ import net.trollyloki.jicsit.server.api.https.HttpsApi;
  * @see HttpsApi#renameServer(String)
  * @see HttpsApi#setAdminPassword(String)
  */
+@NullMarked
 public class ServerAlreadyClaimedException extends ApiException {
 
     /**
@@ -15,7 +17,7 @@ public class ServerAlreadyClaimedException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected ServerAlreadyClaimedException(ErrorResponse response) {
+    ServerAlreadyClaimedException(ErrorResponse response) {
         super(response);
     }
 

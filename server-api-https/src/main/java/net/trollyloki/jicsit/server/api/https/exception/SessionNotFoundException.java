@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * The specified session does not exist.
  */
+@NullMarked
 public class SessionNotFoundException extends ApiException {
 
     /**
@@ -10,7 +13,7 @@ public class SessionNotFoundException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected SessionNotFoundException(ErrorResponse response) {
+    SessionNotFoundException(ErrorResponse response) {
         super(response);
     }
 

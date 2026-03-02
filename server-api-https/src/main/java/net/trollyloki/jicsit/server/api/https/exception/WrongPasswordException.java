@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * The provided password did not match the password set on the server.
  */
+@NullMarked
 public class WrongPasswordException extends ApiException {
 
     /**
@@ -10,7 +13,7 @@ public class WrongPasswordException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected WrongPasswordException(ErrorResponse response) {
+    WrongPasswordException(ErrorResponse response) {
         super(response);
     }
 

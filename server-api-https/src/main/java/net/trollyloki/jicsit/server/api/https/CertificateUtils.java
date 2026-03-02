@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server.api.https;
 
 import net.trollyloki.jicsit.server.api.https.trustmanager.InsecureTrustManager;
+import org.jspecify.annotations.NullMarked;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
@@ -18,6 +19,7 @@ import java.util.Base64;
 /**
  * Provides functions to obtain and fingerprint SSL certificates used by the game.
  */
+@NullMarked
 public final class CertificateUtils {
     private CertificateUtils() {
     }

@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * The save file is too old (or too new) to be loaded.
  */
+@NullMarked
 public class UnsupportedSaveException extends ApiException {
 
     /**
@@ -10,7 +13,7 @@ public class UnsupportedSaveException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected UnsupportedSaveException(ErrorResponse response) {
+    UnsupportedSaveException(ErrorResponse response) {
         super(response);
     }
 

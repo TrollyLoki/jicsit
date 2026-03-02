@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server.api.https;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import java.util.Map;
  * @param enabled  {@code true} if Advanced Game Settings are enabled for the currently loaded session, or {@code false} if they are not
  * @param settings Advanced Game Settings values
  */
+@NullMarked
 public record AdvancedGameSettings(
         @JsonProperty("creativeModeEnabled") boolean enabled,
         @JsonProperty("advancedGameSettings") Map<String, String> settings

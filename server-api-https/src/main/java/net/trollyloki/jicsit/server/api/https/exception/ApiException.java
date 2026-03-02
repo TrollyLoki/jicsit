@@ -1,25 +1,36 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collections;
 import java.util.Map;
 
 /**
  * An error returned by the dedicated server.
  */
+@NullMarked
 public class ApiException extends RuntimeException {
 
     private final String errorCode;
-    private final Map<String, Object> errorData;
+    private final @Nullable Map<String, Object> errorData;
+
+    private static String buildMessage(@Nullable String errorMessage, String errorCode) {
+        if (errorMessage == null) {
+            return errorCode;
+        }
+        return errorMessage + " (" + errorCode + ")";
+    }
 
     /**
      * Creates a new API exception.
      *
-     * @param message   optional error message
-     * @param errorCode error code
-     * @param errorData map of error data, or {@code null}
+     * @param errorMessage optional error message
+     * @param errorCode    error code
+     * @param errorData    map of error data, or {@code null}
      */
-    public ApiException(String message, String errorCode, Map<String, Object> errorData) {
-        super(message + " (" + errorCode + ")");
+    ApiException(@Nullable String errorMessage, String errorCode, @Nullable Map<String, Object> errorData) {
+        super(buildMessage(errorMessage, errorCode));
         this.errorCode = errorCode;
         this.errorData = errorData == null ? null : Collections.unmodifiableMap(errorData);
     }
@@ -32,8 +43,11 @@ public class ApiException extends RuntimeException {
      * @param errorData    map of error data, or {@code null}
      * @see ApiException#ApiException(ApiException.ErrorResponse)
      */
-    protected record ErrorResponse(String errorCode, String errorMessage, Map<String, Object> errorData) {
-
+    protected record ErrorResponse(
+            String errorCode,
+            @Nullable String errorMessage,
+            @Nullable Map<String, Object> errorData
+    ) {
     }
 
     /**
@@ -53,7 +67,7 @@ public class ApiException extends RuntimeException {
      * @param errorData    map of error data, or {@code null}
      * @return API exception
      */
-    public static ApiException createApiException(String errorCode, String errorMessage, Map<String, Object> errorData) {
+    public static ApiException createApiException(String errorCode, @Nullable String errorMessage, @Nullable Map<String, Object> errorData) {
         ErrorResponse response = new ErrorResponse(errorCode, errorMessage, errorData);
         return switch (errorCode) {
             case "invalid_token" -> new InvalidTokenException(response);
@@ -91,7 +105,7 @@ public class ApiException extends RuntimeException {
      *
      * @return map of error data, or {@code null} if none was provided
      */
-    public Map<String, Object> getErrorData() {
+    public @Nullable Map<String, Object> getErrorData() {
         return errorData;
     }
 

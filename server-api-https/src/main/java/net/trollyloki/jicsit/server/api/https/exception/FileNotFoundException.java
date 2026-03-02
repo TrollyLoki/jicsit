@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * The specified save file does not exist.
  */
+@NullMarked
 public class FileNotFoundException extends ApiException {
 
     /**
@@ -10,7 +13,7 @@ public class FileNotFoundException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected FileNotFoundException(ErrorResponse response) {
+    FileNotFoundException(ErrorResponse response) {
         super(response);
     }
 

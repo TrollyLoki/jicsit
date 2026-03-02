@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.trollyloki.jicsit.server.api.https.exception.ApiException;
 import net.trollyloki.jicsit.server.api.https.trustmanager.FingerprintBasedTrustManager;
 import net.trollyloki.jicsit.server.api.https.trustmanager.InsecureTrustManager;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpRequest;
@@ -33,14 +35,23 @@ import java.util.Map;
 /**
  * A client for the dedicated server HTTPS API.
  */
+@NullMarked
 public class HttpsApiClient {
 
     private final RestClient client;
-    private String token;
+    private @Nullable String token;
 
-    private record ResponseSchema<T>(T data, String errorCode, String errorMessage, Map<String, Object> errorData) {
+    private record ResponseSchema<T>(
+            @Nullable T data,
+            @Nullable String errorCode,
+            @Nullable String errorMessage,
+            @Nullable Map<String, Object> errorData
+    ) {
 
         private ApiException createApiException() {
+            if (errorCode == null) {
+                throw new IllegalArgumentException("Response does not contain an error code");
+            }
             return ApiException.createApiException(errorCode, errorMessage, errorData);
         }
 
@@ -80,7 +91,7 @@ public class HttpsApiClient {
      * @param trustManager custom trust manager to use, or {@code null} to use the default trust manager
      * @throws URISyntaxException if the constructed HTTPS URI is invalid
      */
-    public HttpsApiClient(String host, int port, TrustManager trustManager) throws URISyntaxException {
+    public HttpsApiClient(String host, int port, @Nullable TrustManager trustManager) throws URISyntaxException {
 
         RestClient.Builder builder = RestClient.builder().requestInterceptor((request, body, execution) -> {
             // without this interceptor the requests don't include a content length header for some reason
@@ -126,7 +137,7 @@ public class HttpsApiClient {
      *
      * @param token authentication token, or {@code null} to make unauthenticated requests
      */
-    public void setToken(String token) {
+    public void setToken(@Nullable String token) {
         this.token = token;
     }
 
@@ -135,11 +146,11 @@ public class HttpsApiClient {
      *
      * @return authentication token, or {@code null} if making unauthenticated requests
      */
-    public String getToken() {
+    public @Nullable String getToken() {
         return token;
     }
 
-    private Map<String, Object> createRequestBody(String function, Object functionData) {
+    private Map<String, Object> createRequestBody(String function, @Nullable Object functionData) {
         if (functionData == null) {
             return Map.of("function", function);
         } else {
@@ -155,11 +166,11 @@ public class HttpsApiClient {
         return request;
     }
 
-    private RestClient.RequestBodySpec createRequest(String function, Object functionData) {
+    private RestClient.RequestBodySpec createRequest(String function, @Nullable Object functionData) {
         return createRequest().contentType(MediaType.APPLICATION_JSON).body(createRequestBody(function, functionData));
     }
 
-    private RestClient.RequestBodySpec createMultipartRequest(String function, Object functionData, String partName, InputStream partData) {
+    private RestClient.RequestBodySpec createMultipartRequest(String function, @Nullable Object functionData, String partName, InputStream partData) {
         MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
 
         parts.add("data", createRequestBody(function, functionData));
@@ -168,7 +179,7 @@ public class HttpsApiClient {
         return createRequest().contentType(MediaType.MULTIPART_FORM_DATA).body(parts);
     }
 
-    private <T> T readResponse(RestClient.RequestBodySpec request, ParameterizedTypeReference<T> bodyType) {
+    private <T> @Nullable T readResponse(RestClient.RequestBodySpec request, ParameterizedTypeReference<T> bodyType) {
         try {
             return request.retrieve().body(bodyType);
         } catch (RestClientException e) {
@@ -178,6 +189,7 @@ public class HttpsApiClient {
 
     private InputStream getRawResponse(RestClient.RequestBodySpec request) {
         try {
+            //noinspection DataFlowIssue: will never return null because exchange function will never return null
             return request.exchange((httpRequest, response) -> {
                 if (response.getStatusCode().isError()) {
                     handleError(httpRequest, response);
@@ -189,7 +201,7 @@ public class HttpsApiClient {
         }
     }
 
-    private <R> R parseResponse(RestClient.RequestBodySpec request, Class<R> responseDataType) {
+    private <R> @Nullable R parseResponse(RestClient.RequestBodySpec request, Class<R> responseDataType) {
         ParameterizedType responseType = new ParameterizedType() {
             @Override
             public Type[] getActualTypeArguments() {
@@ -202,7 +214,7 @@ public class HttpsApiClient {
             }
 
             @Override
-            public Type getOwnerType() {
+            public @Nullable Type getOwnerType() {
                 return null;
             }
         };
@@ -227,8 +239,20 @@ public class HttpsApiClient {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public InputStream requestRaw(String function, Object functionData) {
+    public InputStream requestRaw(String function, @Nullable Object functionData) {
         return getRawResponse(createRequest(function, functionData));
+    }
+
+    private <R> R executeRequest(RestClient.RequestBodySpec request, Class<R> responseDataType) {
+        R response = parseResponse(request, responseDataType);
+        if (response == null) {
+            throw new RequestException("Response contained no data");
+        }
+        return response;
+    }
+
+    private void executeRequest(RestClient.RequestBodySpec request) {
+        parseResponse(request, Void.class);
     }
 
     /**
@@ -237,13 +261,13 @@ public class HttpsApiClient {
      * @param function         name of the API function to execute
      * @param functionData     data for the function, or {@code null} to not include data in the request
      * @param responseDataType class to parse the response data into
-     * @param <R>              type to return
-     * @return response data, or {@code null} if there was none
+     * @param <R>              data type to return
+     * @return response data
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public <R> R request(String function, Object functionData, Class<R> responseDataType) {
-        return parseResponse(createRequest(function, functionData), responseDataType);
+    public <R> R request(String function, @Nullable Object functionData, Class<R> responseDataType) {
+        return executeRequest(createRequest(function, functionData), responseDataType);
     }
 
     /**
@@ -254,8 +278,8 @@ public class HttpsApiClient {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public void request(String function, Object functionData) {
-        request(function, functionData, Void.class);
+    public void request(String function, @Nullable Object functionData) {
+        executeRequest(createRequest(function, functionData));
     }
 
     /**
@@ -266,13 +290,13 @@ public class HttpsApiClient {
      * @param partName     name of the other part of the request
      * @param partData     input stream containing the raw data for the other part of the request
      * @param responseDataType class to parse the response data into
-     * @param <R>              type to return
-     * @return response data, or {@code null} if there was none
+     * @param <R>              data type to return
+     * @return response data
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public <R> R multipartRequest(String function, Object functionData, String partName, InputStream partData, Class<R> responseDataType) {
-        return parseResponse(createMultipartRequest(function, functionData, partName, partData), responseDataType);
+    public <R> R multipartRequest(String function, @Nullable Object functionData, String partName, InputStream partData, Class<R> responseDataType) {
+        return executeRequest(createMultipartRequest(function, functionData, partName, partData), responseDataType);
     }
 
     /**
@@ -285,8 +309,8 @@ public class HttpsApiClient {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public void multipartRequest(String function, Object functionData, String partName, InputStream partData) {
-        multipartRequest(function, functionData, partName, partData, Void.class);
+    public void multipartRequest(String function, @Nullable Object functionData, String partName, InputStream partData) {
+        executeRequest(createMultipartRequest(function, functionData, partName, partData));
     }
 
     /**
@@ -299,13 +323,10 @@ public class HttpsApiClient {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public void requestToken(String function, Object functionData) {
+    public void requestToken(String function, @Nullable Object functionData) {
         record Schema(String authenticationToken) {
         }
-        String newToken = request(function, functionData, Schema.class).authenticationToken;
-        if (newToken != null && !newToken.isEmpty()) {
-            token = newToken;
-        }
+        token = request(function, functionData, Schema.class).authenticationToken;
     }
 
 }

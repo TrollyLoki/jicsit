@@ -2,6 +2,7 @@ package net.trollyloki.jicsit.server.api.https;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 /**
  * A privilege level granted by an authentication token.
  */
+@NullMarked
 public enum PrivilegeLevel {
 
     /**

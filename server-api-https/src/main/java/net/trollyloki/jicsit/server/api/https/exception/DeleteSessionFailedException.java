@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Failed to delete the session.
  */
+@NullMarked
 public class DeleteSessionFailedException extends ApiException {
 
     /**
@@ -10,7 +13,7 @@ public class DeleteSessionFailedException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected DeleteSessionFailedException(ErrorResponse response) {
+    DeleteSessionFailedException(ErrorResponse response) {
         super(response);
     }
 

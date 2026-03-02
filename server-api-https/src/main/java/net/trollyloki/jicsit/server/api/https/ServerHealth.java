@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server.api.https;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A response to a health check.
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param health     "healthy" if tick rate is above ten ticks per second, or "slow" otherwise
  * @param customData custom data from the server (vanilla servers provide an empty string)
  */
+@NullMarked
 public record ServerHealth(String health, @JsonProperty("serverCustomData") String customData) {
 
     /**

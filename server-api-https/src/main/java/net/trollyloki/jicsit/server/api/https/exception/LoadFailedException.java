@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Failed to load the save file.
  */
+@NullMarked
 public class LoadFailedException extends ApiException {
 
     /**
@@ -10,7 +13,7 @@ public class LoadFailedException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected LoadFailedException(ErrorResponse response) {
+    LoadFailedException(ErrorResponse response) {
         super(response);
     }
 

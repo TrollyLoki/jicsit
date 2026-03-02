@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server.api.https;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 
@@ -19,6 +20,7 @@ import java.time.Duration;
  * @param averageTickRate          average server tick rate in ticks per second
  * @param autoLoadSessionName      name of the session that will be loaded automatically when the server starts
  */
+@NullMarked
 public record ServerGameState(
         String activeSessionName,
         @JsonProperty("numConnectedPlayers") int connectedPlayerCount,

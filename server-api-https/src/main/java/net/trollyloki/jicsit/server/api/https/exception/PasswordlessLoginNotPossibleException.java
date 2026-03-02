@@ -1,12 +1,14 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
 import net.trollyloki.jicsit.server.api.https.HttpsApi;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Passwordless login is not currently possible.
  *
  * @see HttpsApi#removeClientPassword()
  */
+@NullMarked
 public class PasswordlessLoginNotPossibleException extends ApiException {
 
     /**
@@ -14,7 +16,7 @@ public class PasswordlessLoginNotPossibleException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected PasswordlessLoginNotPossibleException(ErrorResponse response) {
+    PasswordlessLoginNotPossibleException(ErrorResponse response) {
         super(response);
     }
 

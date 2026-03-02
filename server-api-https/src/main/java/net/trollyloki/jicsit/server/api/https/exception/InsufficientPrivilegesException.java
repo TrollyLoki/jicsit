@@ -2,6 +2,7 @@ package net.trollyloki.jicsit.server.api.https.exception;
 
 import net.trollyloki.jicsit.server.api.https.HttpsApi;
 import net.trollyloki.jicsit.server.api.https.PrivilegeLevel;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The client is missing required privileges to access the requested function.
@@ -9,6 +10,7 @@ import net.trollyloki.jicsit.server.api.https.PrivilegeLevel;
  * @see HttpsApi#passwordlessLogin(PrivilegeLevel)
  * @see HttpsApi#passwordLogin(PrivilegeLevel, String)
  */
+@NullMarked
 public class InsufficientPrivilegesException extends ApiException {
 
     /**
@@ -16,7 +18,7 @@ public class InsufficientPrivilegesException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected InsufficientPrivilegesException(ErrorResponse response) {
+    InsufficientPrivilegesException(ErrorResponse response) {
         super(response);
     }
 

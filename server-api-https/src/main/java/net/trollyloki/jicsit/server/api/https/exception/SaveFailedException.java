@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Failed to create the save file.
  */
+@NullMarked
 public class SaveFailedException extends ApiException {
 
     /**
@@ -10,7 +13,7 @@ public class SaveFailedException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected SaveFailedException(ErrorResponse response) {
+    SaveFailedException(ErrorResponse response) {
         super(response);
     }
 

@@ -1,13 +1,15 @@
 package net.trollyloki.jicsit.server.api.https;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 
 /**
  * Parameters for a new session.
  * <p>
- * <strong>Note:</strong> Onboarding is always skipped on vanilla servers
+ * <strong>Note:</strong> Onboarding is always skipped on vanilla servers.
  * <p>
  * Vanilla servers support the following starting locations:
  * <ul>
@@ -24,9 +26,10 @@ import java.util.Map;
  * @param advancedGameSettings {@link AdvancedGameSettings Advanced Game Settings} values to apply to the session
  * @param customOptions        custom options to pass to the session URL, not used by vanilla servers
  */
+@NullMarked
 public record NewGameData(
         String sessionName,
-        String mapName,
+        @Nullable String mapName,
         String startingLocation,
         @JsonProperty("bSkipOnboarding") boolean skipOnboarding,
         Map<String, String> advancedGameSettings,
@@ -56,7 +59,7 @@ public record NewGameData(
     /**
      * Parameters for a new session on the default map.
      * <p>
-     * <strong>Note:</strong> Onboarding is always skipped on vanilla servers
+     * <strong>Note:</strong> Onboarding is always skipped on vanilla servers.
      * <p>
      * Vanilla servers support the following starting locations:
      * <ul>

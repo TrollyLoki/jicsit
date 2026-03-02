@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server.api.https;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import java.util.Map;
  * @see HttpsApi#setClientPassword(String)
  * @see HttpsApi#setAutoLoadSessionName(String)
  */
+@NullMarked
 public record ServerOptions(
         @JsonProperty("serverOptions") Map<String, String> current,
         @JsonProperty("pendingServerOptions") Map<String, String> pending

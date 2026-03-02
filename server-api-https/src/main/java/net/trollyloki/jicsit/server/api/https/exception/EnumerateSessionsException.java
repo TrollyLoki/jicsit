@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Failed to enumerate session saves.
  */
+@NullMarked
 public class EnumerateSessionsException extends ApiException {
 
     /**
@@ -10,7 +13,7 @@ public class EnumerateSessionsException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected EnumerateSessionsException(ErrorResponse response) {
+    EnumerateSessionsException(ErrorResponse response) {
         super(response);
     }
 

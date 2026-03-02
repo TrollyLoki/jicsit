@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Failed to delete the save file.
  */
+@NullMarked
 public class DeleteSaveFailedException extends ApiException {
 
     /**
@@ -10,7 +13,7 @@ public class DeleteSaveFailedException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected DeleteSaveFailedException(ErrorResponse response) {
+    DeleteSaveFailedException(ErrorResponse response) {
         super(response);
     }
 

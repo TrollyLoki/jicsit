@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * The provided password was empty, but it cannot be removed.
  */
+@NullMarked
 public class CannotRemovePasswordException extends ApiException {
 
     /**
@@ -10,7 +13,7 @@ public class CannotRemovePasswordException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected CannotRemovePasswordException(ErrorResponse response) {
+    CannotRemovePasswordException(ErrorResponse response) {
         super(response);
     }
 

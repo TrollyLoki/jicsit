@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server.api.https;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The result of a console command.
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param success {@code true} if the command executed successfully, or {@code false} if it did not
  * @param output  multiline output of the command
  */
+@NullMarked
 public record CommandResult(
         @JsonProperty("returnValue") boolean success,
         @JsonProperty("commandResult") String output

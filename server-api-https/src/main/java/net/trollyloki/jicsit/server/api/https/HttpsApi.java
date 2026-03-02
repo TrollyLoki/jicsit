@@ -17,6 +17,7 @@ import net.trollyloki.jicsit.server.api.https.exception.ServerNotClaimedExceptio
 import net.trollyloki.jicsit.server.api.https.exception.SessionNotFoundException;
 import net.trollyloki.jicsit.server.api.https.exception.UnsupportedSaveException;
 import net.trollyloki.jicsit.server.api.https.exception.WrongPasswordException;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.Map;
 /**
  * An interface for the standard HTTPS API functions.
  */
+@NullMarked
 public class HttpsApi {
 
     private final HttpsApiClient client;

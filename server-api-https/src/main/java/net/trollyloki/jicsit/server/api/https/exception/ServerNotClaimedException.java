@@ -1,12 +1,14 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
 import net.trollyloki.jicsit.server.api.https.HttpsApi;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The server has not been claimed yet.
  *
  * @see HttpsApi#claimServer(String, String)
  */
+@NullMarked
 public class ServerNotClaimedException extends ApiException {
 
     /**
@@ -14,7 +16,7 @@ public class ServerNotClaimedException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected ServerNotClaimedException(ErrorResponse response) {
+    ServerNotClaimedException(ErrorResponse response) {
         super(response);
     }
 

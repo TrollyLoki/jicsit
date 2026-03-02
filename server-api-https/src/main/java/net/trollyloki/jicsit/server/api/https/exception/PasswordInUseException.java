@@ -1,8 +1,11 @@
 package net.trollyloki.jicsit.server.api.https.exception;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * The provided password is already used as the other password.
  */
+@NullMarked
 public class PasswordInUseException extends ApiException {
 
     /**
@@ -10,7 +13,7 @@ public class PasswordInUseException extends ApiException {
      *
      * @param response {@link ErrorResponse}
      */
-    protected PasswordInUseException(ErrorResponse response) {
+    PasswordInUseException(ErrorResponse response) {
         super(response);
     }
 
