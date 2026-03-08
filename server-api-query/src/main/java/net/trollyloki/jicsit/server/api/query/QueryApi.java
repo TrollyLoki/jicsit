@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * An interface for the standard Lightweight Query API flow.
  */
 @NullMarked
-public class LightweightQueryApi implements Closeable {
+public class QueryApi implements Closeable {
 
     /**
      * A request sent to the server to retrieve information about the current server state.
@@ -33,14 +33,14 @@ public class LightweightQueryApi implements Closeable {
             SERVER_STATE_RESPONSE, ServerStatePayload::read
     );
 
-    private final LightweightQueryApiClient client;
+    private final QueryApiClient client;
 
     /**
-     * Creates an interface for the standard Lightweight Query API flow on top of a {@link LightweightQueryApiClient}.
+     * Creates an interface for the standard Lightweight Query API flow on top of a {@link QueryApiClient}.
      *
      * @param client underlying client
      */
-    public LightweightQueryApi(LightweightQueryApiClient client) {
+    public QueryApi(QueryApiClient client) {
         this.client = client;
     }
 
@@ -53,22 +53,22 @@ public class LightweightQueryApi implements Closeable {
     }
 
     /**
-     * Creates a new {@link LightweightQueryApi} instance for interfacing with
+     * Creates a new {@link QueryApi} instance for interfacing with
      * the standard Lightweight Query API of a specific server.
      *
      * @param host    server host name
      * @param port    server port
      * @param timeout timeout for receiving messages in milliseconds
-     * @return new {@link LightweightQueryApi} instance
+     * @return new {@link QueryApi} instance
      * @throws IllegalArgumentException if {@code port} is invalid, {@code host} is {@code null}, or {@code timeout} is negative
      * @throws SocketException          if the socket could not be opened
-     * @see LightweightQueryApiClient#LightweightQueryApiClient(String, int)
-     * @see LightweightQueryApi#LightweightQueryApi(LightweightQueryApiClient)
+     * @see QueryApiClient#QueryApiClient(String, int)
+     * @see QueryApi#QueryApi(QueryApiClient)
      */
-    public static LightweightQueryApi of(String host, int port, int timeout) throws SocketException {
-        LightweightQueryApiClient client = new LightweightQueryApiClient(host, port);
+    public static QueryApi of(String host, int port, int timeout) throws SocketException {
+        QueryApiClient client = new QueryApiClient(host, port);
         client.setTimeout(timeout);
-        return new LightweightQueryApi(client);
+        return new QueryApi(client);
     }
 
     /**
