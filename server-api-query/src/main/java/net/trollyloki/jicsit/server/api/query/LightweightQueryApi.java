@@ -6,7 +6,9 @@ import net.trollyloki.jicsit.server.api.query.protocol.payload.CookiePayload;
 import net.trollyloki.jicsit.server.api.query.protocol.payload.ServerStatePayload;
 import org.jspecify.annotations.NullMarked;
 
+import java.io.Closeable;
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -14,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * An interface for the standard Lightweight Query API flow.
  */
 @NullMarked
-public class LightweightQueryApi {
+public class LightweightQueryApi implements Closeable {
 
     /**
      * A request sent to the server to retrieve information about the current server state.
@@ -40,6 +42,33 @@ public class LightweightQueryApi {
      */
     public LightweightQueryApi(LightweightQueryApiClient client) {
         this.client = client;
+    }
+
+    /**
+     * Closes the underlying client's socket.
+     */
+    @Override
+    public void close() {
+        client.close();
+    }
+
+    /**
+     * Creates a new {@link LightweightQueryApi} instance for interfacing with
+     * the standard Lightweight Query API of a specific server.
+     *
+     * @param host    server host name
+     * @param port    server port
+     * @param timeout timeout for receiving messages in milliseconds
+     * @return new {@link LightweightQueryApi} instance
+     * @throws IllegalArgumentException if {@code port} is invalid, {@code host} is {@code null}, or {@code timeout} is negative
+     * @throws SocketException          if the socket could not be opened
+     * @see LightweightQueryApiClient#LightweightQueryApiClient(String, int)
+     * @see LightweightQueryApi#LightweightQueryApi(LightweightQueryApiClient)
+     */
+    public static LightweightQueryApi of(String host, int port, int timeout) throws SocketException {
+        LightweightQueryApiClient client = new LightweightQueryApiClient(host, port);
+        client.setTimeout(timeout);
+        return new LightweightQueryApi(client);
     }
 
     /**

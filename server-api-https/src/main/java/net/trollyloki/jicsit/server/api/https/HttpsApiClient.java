@@ -134,6 +134,8 @@ public class HttpsApiClient {
 
     /**
      * Sets the current authentication token.
+     * An API authentication token can be obtained by running
+     * the {@code server.GenerateAPIToken} command in the dedicated server's console.
      *
      * @param token authentication token, or {@code null} to make unauthenticated requests
      */

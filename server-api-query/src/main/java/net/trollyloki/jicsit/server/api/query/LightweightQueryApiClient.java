@@ -28,14 +28,11 @@ public class LightweightQueryApiClient implements Closeable {
      *
      * @param host server host name
      * @param port server port
-     * @throws IllegalArgumentException if {@code port} is invalid, or {@code host} is {@code null} or cannot be resolved
+     * @throws IllegalArgumentException if {@code port} is invalid, or {@code host} is {@code null}
      * @throws SocketException          if the socket could not be opened
      */
     public LightweightQueryApiClient(String host, int port) throws SocketException {
         this.address = new InetSocketAddress(host, port);
-        if (address.isUnresolved()) {
-            throw new IllegalArgumentException("Host name could not be resolved");
-        }
         this.socket = new DatagramSocket();
     }
 
