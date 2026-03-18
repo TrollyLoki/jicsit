@@ -24,7 +24,6 @@ import org.jspecify.annotations.Nullable;
 
 import javax.net.ssl.TrustManager;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 /**
@@ -73,11 +72,11 @@ public class HttpsApi {
      * @param trustManager custom trust manager to use, or {@code null} to use the default trust manager
      * @param token        authentication token, or {@code null} to make unauthenticated requests
      * @return new {@link HttpsApi} instance
-     * @throws URISyntaxException if the constructed HTTPS URI is invalid
+     * @throws IllegalArgumentException if {@code host} and/or {@code port} is invalid
      * @see HttpsApiClient#HttpsApiClient(String, int, TrustManager)
      * @see HttpsApi#HttpsApi(HttpsApiClient)
      */
-    public static HttpsApi of(String host, int port, @Nullable TrustManager trustManager, @Nullable String token) throws URISyntaxException {
+    public static HttpsApi of(String host, int port, @Nullable TrustManager trustManager, @Nullable String token) {
         HttpsApiClient client = new HttpsApiClient(host, port, trustManager);
         client.setToken(token);
         return new HttpsApi(client);

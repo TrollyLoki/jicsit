@@ -60,7 +60,7 @@ public class QueryApi implements Closeable {
      * @param port    server port
      * @param timeout timeout for receiving messages in milliseconds
      * @return new {@link QueryApi} instance
-     * @throws IllegalArgumentException if {@code port} is invalid, {@code host} is {@code null}, or {@code timeout} is negative
+     * @throws IllegalArgumentException if {@code timeout} is negative or {@code host} and/or {@code port} is invalid
      * @throws SocketException          if the socket could not be opened
      * @see QueryApiClient#QueryApiClient(String, int)
      * @see QueryApi#QueryApi(QueryApiClient)

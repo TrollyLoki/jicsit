@@ -28,11 +28,13 @@ public class QueryApiClient implements Closeable {
      *
      * @param host server host name
      * @param port server port
-     * @throws IllegalArgumentException if {@code port} is invalid, or {@code host} is {@code null}
+     * @throws IllegalArgumentException if {@code host} and/or {@code port} is invalid
      * @throws SocketException          if the socket could not be opened
      */
     public QueryApiClient(String host, int port) throws SocketException {
         this.address = new InetSocketAddress(host, port);
+        if (address.isUnresolved())
+            throw new IllegalArgumentException("Failed to resolve address");
         this.socket = new DatagramSocket();
     }
 

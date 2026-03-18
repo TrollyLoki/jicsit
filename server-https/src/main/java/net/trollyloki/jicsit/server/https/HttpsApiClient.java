@@ -89,9 +89,9 @@ public class HttpsApiClient {
      * @param host         server host name
      * @param port         server port
      * @param trustManager custom trust manager to use, or {@code null} to use the default trust manager
-     * @throws URISyntaxException if the constructed HTTPS URI is invalid
+     * @throws IllegalArgumentException if {@code host} and/or {@code port} is invalid
      */
-    public HttpsApiClient(String host, int port, @Nullable TrustManager trustManager) throws URISyntaxException {
+    public HttpsApiClient(String host, int port, @Nullable TrustManager trustManager) {
 
         RestClient.Builder builder = RestClient.builder().requestInterceptor((request, body, execution) -> {
             // without this interceptor the requests don't include a content length header for some reason
@@ -112,7 +112,11 @@ public class HttpsApiClient {
         builder.defaultStatusHandler(HttpStatusCode::isError, this::handleError);
 
         // server configuration
-        builder.baseUrl(new URI("https", null, host, port, "/api/v1", null, null));
+        try {
+            builder.baseUrl(new URI("https", null, host, port, "/api/v1", null, null));
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
 
         this.client = builder.build();
     }
@@ -125,10 +129,9 @@ public class HttpsApiClient {
      *
      * @param host server host name
      * @param port server port
-     * @throws URISyntaxException if the constructed HTTPS URI is invalid
      * @see #HttpsApiClient(String, int, TrustManager)
      */
-    public HttpsApiClient(String host, int port) throws URISyntaxException {
+    public HttpsApiClient(String host, int port) {
         this(host, port, null);
     }
 
