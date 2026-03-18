@@ -30,6 +30,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.util.Map;
 
 /**
@@ -88,25 +89,36 @@ public class HttpsApiClient {
      *
      * @param host         server host name
      * @param port         server port
+     * @param timeout      duration to allow the underlying connection to be established, or {@code null} to wait indefinitely
      * @param trustManager custom trust manager to use, or {@code null} to use the default trust manager
-     * @throws IllegalArgumentException if {@code host} and/or {@code port} is invalid
+     * @throws IllegalArgumentException if {@code timeout} is non-positive or {@code host}/{@code port} is invalid
      */
-    public HttpsApiClient(String host, int port, @Nullable TrustManager trustManager) {
+    public HttpsApiClient(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager) {
 
-        RestClient.Builder builder = RestClient.builder().requestInterceptor((request, body, execution) -> {
+        HttpClient.Builder httpClientBuilder = HttpClient.newBuilder();
+
+        // certificate handling
+        if (trustManager != null) {
+            try {
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, new TrustManager[]{trustManager}, null);
+                httpClientBuilder.sslContext(sslContext);
+            } catch (KeyManagementException | NoSuchAlgorithmException e) {
+                throw new UnsupportedOperationException(e);
+            }
+        }
+
+        if (timeout != null) {
+            httpClientBuilder.connectTimeout(timeout);
+        }
+
+        RestClient.Builder builder = RestClient.builder();
+        builder.requestFactory(new JdkClientHttpRequestFactory(httpClientBuilder.build()));
+
+        builder.requestInterceptor((request, body, execution) -> {
             // without this interceptor the requests don't include a content length header for some reason
             return execution.execute(request, body);
         });
-
-        // certificate handling
-        SSLContext sslContext;
-        try {
-            sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustManager == null ? null : new TrustManager[]{trustManager}, null);
-        } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException(e);
-        }
-        builder.requestFactory(new JdkClientHttpRequestFactory(HttpClient.newBuilder().sslContext(sslContext).build()));
 
         // error handling
         builder.defaultStatusHandler(HttpStatusCode::isError, this::handleError);
@@ -119,20 +131,6 @@ public class HttpsApiClient {
         }
 
         this.client = builder.build();
-    }
-
-    /**
-     * Creates a new client using the default trust manager.
-     * Note that this means the client will <strong>refuse to connect to servers using self-signed certificates</strong>.
-     * If you need to connect to a server that is using a self-signed certificate,
-     * provide a custom trust manager as explained by {@link #HttpsApiClient(String, int, TrustManager)}
-     *
-     * @param host server host name
-     * @param port server port
-     * @see #HttpsApiClient(String, int, TrustManager)
-     */
-    public HttpsApiClient(String host, int port) {
-        this(host, port, null);
     }
 
     /**

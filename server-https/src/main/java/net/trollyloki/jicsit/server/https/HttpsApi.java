@@ -24,6 +24,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.net.ssl.TrustManager;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.Map;
 
 /**
@@ -69,15 +70,16 @@ public class HttpsApi {
      *
      * @param host         server host name
      * @param port         server port
+     * @param timeout      duration to allow the underlying connection to be established, or {@code null} to wait indefinitely
      * @param trustManager custom trust manager to use, or {@code null} to use the default trust manager
      * @param token        authentication token, or {@code null} to make unauthenticated requests
      * @return new {@link HttpsApi} instance
-     * @throws IllegalArgumentException if {@code host} and/or {@code port} is invalid
-     * @see HttpsApiClient#HttpsApiClient(String, int, TrustManager)
+     * @throws IllegalArgumentException if {@code timeout} is non-positive or {@code host}/{@code port} is invalid
+     * @see HttpsApiClient#HttpsApiClient(String, int, Duration, TrustManager)
      * @see HttpsApi#HttpsApi(HttpsApiClient)
      */
-    public static HttpsApi of(String host, int port, @Nullable TrustManager trustManager, @Nullable String token) {
-        HttpsApiClient client = new HttpsApiClient(host, port, trustManager);
+    public static HttpsApi of(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager, @Nullable String token) {
+        HttpsApiClient client = new HttpsApiClient(host, port, timeout, trustManager);
         client.setToken(token);
         return new HttpsApi(client);
     }

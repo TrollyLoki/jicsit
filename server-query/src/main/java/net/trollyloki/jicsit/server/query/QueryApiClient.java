@@ -28,7 +28,7 @@ public class QueryApiClient implements Closeable {
      *
      * @param host server host name
      * @param port server port
-     * @throws IllegalArgumentException if {@code host} and/or {@code port} is invalid
+     * @throws IllegalArgumentException if {@code host}/{@code port} is invalid
      * @throws SocketException          if the socket could not be opened
      */
     public QueryApiClient(String host, int port) throws SocketException {
@@ -64,7 +64,7 @@ public class QueryApiClient implements Closeable {
     /**
      * Gets the timeout for receiving messages.
      *
-     * @return timeout in milliseconds
+     * @return timeout in milliseconds, or {@code 0} if infinite
      * @throws SocketException if the socket is closed or there is an underlying error
      */
     public int getTimeout() throws SocketException {
@@ -74,7 +74,7 @@ public class QueryApiClient implements Closeable {
     /**
      * Sets the timeout for receiving messages.
      *
-     * @param timeout timeout in milliseconds
+     * @param timeout timeout in milliseconds, or {@code 0} for infinite
      * @throws IllegalArgumentException if {@code timeout} is negative
      * @throws SocketException          if the socket is closed or there is an underlying error
      */

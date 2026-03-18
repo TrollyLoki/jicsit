@@ -5,10 +5,12 @@ import net.trollyloki.jicsit.server.query.protocol.PayloadReader;
 import net.trollyloki.jicsit.server.query.protocol.payload.CookiePayload;
 import net.trollyloki.jicsit.server.query.protocol.payload.ServerStatePayload;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.SocketException;
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -58,16 +60,20 @@ public class QueryApi implements Closeable {
      *
      * @param host    server host name
      * @param port    server port
-     * @param timeout timeout for receiving messages in milliseconds
+     * @param timeout duration to wait for responses, or {@code null} to wait indefinitely
      * @return new {@link QueryApi} instance
-     * @throws IllegalArgumentException if {@code timeout} is negative or {@code host} and/or {@code port} is invalid
+     * @throws IllegalArgumentException if {@code timeout} is non-positive or {@code host}/{@code port} is invalid
      * @throws SocketException          if the socket could not be opened
      * @see QueryApiClient#QueryApiClient(String, int)
      * @see QueryApi#QueryApi(QueryApiClient)
      */
-    public static QueryApi of(String host, int port, int timeout) throws SocketException {
+    public static QueryApi of(String host, int port, @Nullable Duration timeout) throws SocketException {
         QueryApiClient client = new QueryApiClient(host, port);
-        client.setTimeout(timeout);
+        if (timeout != null) {
+            long millis = timeout.toMillis();
+            if (millis <= 0) throw new IllegalArgumentException("Timeout duration must be positive");
+            client.setTimeout((int) timeout.toMillis());
+        }
         return new QueryApi(client);
     }
 
