@@ -17,7 +17,7 @@ import java.util.Map;
  * A client for the dedicated server Lightweight Query API.
  */
 @NullMarked
-public class QueryApiClient implements Closeable {
+public class QueryClient implements Closeable {
 
     private final InetSocketAddress address;
     private int bufferSize = 1024;
@@ -31,7 +31,7 @@ public class QueryApiClient implements Closeable {
      * @throws IllegalArgumentException if {@code host}/{@code port} is invalid
      * @throws SocketException          if the socket could not be opened
      */
-    public QueryApiClient(String host, int port) throws SocketException {
+    public QueryClient(String host, int port) throws SocketException {
         this.address = new InetSocketAddress(host, port);
         if (address.isUnresolved())
             throw new IllegalArgumentException("Failed to resolve address");

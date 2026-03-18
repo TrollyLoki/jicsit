@@ -33,14 +33,14 @@ import java.util.Map;
 @NullMarked
 public class HttpsApi {
 
-    private final HttpsApiClient client;
+    private final HttpsClient client;
 
     /**
-     * Creates an interface for the standard HTTPS API functions on top of an {@link HttpsApiClient}.
+     * Creates an interface for the standard HTTPS API functions on top of an {@link HttpsClient}.
      *
      * @param client underlying client
      */
-    public HttpsApi(HttpsApiClient client) {
+    public HttpsApi(HttpsClient client) {
         this.client = client;
     }
 
@@ -75,11 +75,11 @@ public class HttpsApi {
      * @param token        authentication token, or {@code null} to make unauthenticated requests
      * @return new {@link HttpsApi} instance
      * @throws IllegalArgumentException if {@code timeout} is non-positive or {@code host}/{@code port} is invalid
-     * @see HttpsApiClient#HttpsApiClient(String, int, Duration, TrustManager)
-     * @see HttpsApi#HttpsApi(HttpsApiClient)
+     * @see HttpsClient#HttpsClient(String, int, Duration, TrustManager)
+     * @see HttpsApi#HttpsApi(HttpsClient)
      */
     public static HttpsApi of(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager, @Nullable String token) {
-        HttpsApiClient client = new HttpsApiClient(host, port, timeout, trustManager);
+        HttpsClient client = new HttpsClient(host, port, timeout, trustManager);
         client.setToken(token);
         return new HttpsApi(client);
     }

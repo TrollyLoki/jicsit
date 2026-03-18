@@ -37,7 +37,7 @@ import java.util.Map;
  * A client for the dedicated server HTTPS API.
  */
 @NullMarked
-public class HttpsApiClient {
+public class HttpsClient {
 
     private final RestClient client;
     private @Nullable String token;
@@ -93,7 +93,7 @@ public class HttpsApiClient {
      * @param trustManager custom trust manager to use, or {@code null} to use the default trust manager
      * @throws IllegalArgumentException if {@code timeout} is non-positive or {@code host}/{@code port} is invalid
      */
-    public HttpsApiClient(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager) {
+    public HttpsClient(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager) {
 
         HttpClient.Builder httpClientBuilder = HttpClient.newBuilder();
 

@@ -35,14 +35,14 @@ public class QueryApi implements Closeable {
             SERVER_STATE_RESPONSE, ServerStatePayload::read
     );
 
-    private final QueryApiClient client;
+    private final QueryClient client;
 
     /**
-     * Creates an interface for the standard Lightweight Query API flow on top of a {@link QueryApiClient}.
+     * Creates an interface for the standard Lightweight Query API flow on top of a {@link QueryClient}.
      *
      * @param client underlying client
      */
-    public QueryApi(QueryApiClient client) {
+    public QueryApi(QueryClient client) {
         this.client = client;
     }
 
@@ -64,11 +64,11 @@ public class QueryApi implements Closeable {
      * @return new {@link QueryApi} instance
      * @throws IllegalArgumentException if {@code timeout} is non-positive or {@code host}/{@code port} is invalid
      * @throws SocketException          if the socket could not be opened
-     * @see QueryApiClient#QueryApiClient(String, int)
-     * @see QueryApi#QueryApi(QueryApiClient)
+     * @see QueryClient#QueryClient(String, int)
+     * @see QueryApi#QueryApi(QueryClient)
      */
     public static QueryApi of(String host, int port, @Nullable Duration timeout) throws SocketException {
-        QueryApiClient client = new QueryApiClient(host, port);
+        QueryClient client = new QueryClient(host, port);
         if (timeout != null) {
             long millis = timeout.toMillis();
             if (millis <= 0) throw new IllegalArgumentException("Timeout duration must be positive");
