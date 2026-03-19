@@ -40,6 +40,7 @@ public interface QueryApi extends Closeable {
      * Creates a new {@link QueryApi} instance for the vanilla Lightweight Query API on top of a {@link QueryClient}.
      *
      * @param client underlying client
+     * @return new {@link QueryApi} instance
      */
     static QueryApi of(QueryClient client) {
         return new QueryApiImpl(client);

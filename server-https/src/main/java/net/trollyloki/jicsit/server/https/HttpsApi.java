@@ -77,6 +77,7 @@ public interface HttpsApi {
      * Creates a new {@link HttpsApi} instance for the vanilla HTTPS API on top of a {@link HttpsClient}.
      *
      * @param client underlying client
+     * @return new {@link HttpsApi} instance
      */
     static HttpsApi of(HttpsClient client) {
         return new HttpsApiImpl(client);

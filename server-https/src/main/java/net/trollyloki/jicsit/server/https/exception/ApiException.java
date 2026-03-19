@@ -12,7 +12,9 @@ import java.util.Map;
 @NullMarked
 public class ApiException extends RuntimeException {
 
+    /***/
     private final String errorCode;
+    /***/
     private final @Nullable Map<String, Object> errorData;
 
     private static String buildMessage(@Nullable String errorMessage, String errorCode) {
