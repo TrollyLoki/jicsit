@@ -35,8 +35,12 @@ public interface HttpsApi {
 
     /**
      * Creates a new {@link HttpsApi} instance for the vanilla HTTPS API on a specific server.
-     * An API authentication token can be obtained by running
+     * <p>
+     * Authentication can be obtained by calling {@link #setToken(String)} with an API token created by running
      * the {@code server.GenerateAPIToken} command in the dedicated server's console.
+     * Alternatively, authentication can also be obtained by calling {@link HttpsApi#passwordlessLogin(PrivilegeLevel)}
+     * or {@link HttpsApi#passwordLogin(PrivilegeLevel, String)},
+     * but usage of these functions by third-party applications is discouraged by the developers.
      * <p>
      * Note that the returned {@link HttpsApi} will
      * <strong>refuse to connect to servers using self-signed certificates</strong>
@@ -61,15 +65,12 @@ public interface HttpsApi {
      * @param port         server port
      * @param timeout      duration to allow the underlying connection to be established, or {@code null} to wait indefinitely
      * @param trustManager custom trust manager to use, or {@code null} to use the default trust manager
-     * @param token        authentication token, or {@code null} to make unauthenticated requests
      * @return new {@link HttpsApi} instance
      * @throws IllegalArgumentException if {@code timeout} is non-positive or {@code host}/{@code port} is invalid
      * @see HttpsClient#HttpsClient(String, int, Duration, TrustManager)
-     * @see HttpsClient#setToken(String)
      */
-    static HttpsApi of(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager, @Nullable String token) {
+    static HttpsApi of(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager) {
         HttpsClient client = new HttpsClient(host, port, timeout, trustManager);
-        client.setToken(token);
         return of(client);
     }
 
@@ -82,6 +83,15 @@ public interface HttpsApi {
     static HttpsApi of(HttpsClient client) {
         return new HttpsApiImpl(client);
     }
+
+    /**
+     * Sets the current authentication token.
+     * An API authentication token can be obtained by running
+     * the {@code server.GenerateAPIToken} command in the dedicated server's console.
+     *
+     * @param token authentication token, or {@code null} to make unauthenticated requests
+     */
+    void setToken(@Nullable String token);
 
     /**
      * Gets the privilege level granted by the current authentication token.

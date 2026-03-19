@@ -65,12 +65,13 @@ public class HttpsClient {
     }
 
     /**
-     * Creates a new client.
+     * Creates a new (initially unauthenticated) client.
      * <p>
-     * The client is initially unauthenticated.
-     * An API token for authentication can be provided by calling {@link #setToken(String)} on the created client.
-     * Authentication can also be obtained by calling {@link HttpsApi#passwordlessLogin(PrivilegeLevel)}
-     * or {@link HttpsApi#passwordLogin(PrivilegeLevel, String)}, but usage of these functions by third-party applications is discouraged by the developers.
+     * Authentication can be obtained by calling {@link #setToken(String)} with an API token created by running
+     * the {@code server.GenerateAPIToken} command in the dedicated server's console.
+     * Alternatively, authentication can also be obtained by calling {@link HttpsApi#passwordlessLogin(PrivilegeLevel)}
+     * or {@link HttpsApi#passwordLogin(PrivilegeLevel, String)},
+     * but usage of these functions by third-party applications is discouraged by the developers.
      * <p>
      * The following custom trust manager implementations may be helpful
      * when attempting to connect to servers that are using self-signed certificates:

@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server;
 
 import net.trollyloki.jicsit.server.https.HttpsApi;
+import net.trollyloki.jicsit.server.https.PrivilegeLevel;
 import net.trollyloki.jicsit.server.https.trustmanager.FingerprintBasedTrustManager;
 import net.trollyloki.jicsit.server.https.trustmanager.InsecureTrustManager;
 import net.trollyloki.jicsit.server.query.QueryApi;
@@ -17,8 +18,12 @@ public interface ServerApi extends QueryApi, HttpsApi {
 
     /**
      * Creates a new {@link ServerApi} instance for the vanilla HTTPS and Lightweight Query APIs on a specific server.
-     * An API authentication token can be obtained by running
+     * <p>
+     * Authentication can be obtained by calling {@link #setToken(String)} with an API token created by running
      * the {@code server.GenerateAPIToken} command in the dedicated server's console.
+     * Alternatively, authentication can also be obtained by calling {@link HttpsApi#passwordlessLogin(PrivilegeLevel)}
+     * or {@link HttpsApi#passwordLogin(PrivilegeLevel, String)},
+     * but usage of these functions by third-party applications is discouraged by the developers.
      * <p>
      * Note that the returned {@link ServerApi} will
      * <strong>refuse to connect to servers using self-signed certificates</strong>
@@ -43,13 +48,12 @@ public interface ServerApi extends QueryApi, HttpsApi {
      * @param port         server port
      * @param timeout      duration to wait for responses, or {@code null} to wait indefinitely
      * @param trustManager custom trust manager to use, or {@code null} to use the default trust manager
-     * @param token        authentication token, or {@code null} to make unauthenticated requests
      * @return new {@link ServerApi} instance
      * @throws IllegalArgumentException if {@code timeout} is non-positive or {@code host}/{@code port} is invalid
      * @throws SocketException          if the query socket could not be opened
      */
-    static ServerApi of(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager, @Nullable String token) throws SocketException {
-        return new ServerApiImpl(QueryApi.of(host, port, timeout), HttpsApi.of(host, port, timeout, trustManager, token));
+    static ServerApi of(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager) throws SocketException {
+        return new ServerApiImpl(QueryApi.of(host, port, timeout), HttpsApi.of(host, port, timeout, trustManager));
     }
 
 }

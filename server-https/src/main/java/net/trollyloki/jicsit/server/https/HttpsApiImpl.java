@@ -1,6 +1,7 @@
 package net.trollyloki.jicsit.server.https;
 
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -12,6 +13,11 @@ class HttpsApiImpl implements HttpsApi {
 
     public HttpsApiImpl(HttpsClient client) {
         this.client = client;
+    }
+
+    @Override
+    public void setToken(@Nullable String token) {
+        client.setToken(token);
     }
 
     @Override

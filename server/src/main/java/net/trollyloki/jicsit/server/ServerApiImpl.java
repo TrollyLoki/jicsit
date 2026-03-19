@@ -12,6 +12,7 @@ import net.trollyloki.jicsit.server.https.ServerSessions;
 import net.trollyloki.jicsit.server.query.QueryApi;
 import net.trollyloki.jicsit.server.query.ServerState;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +42,11 @@ class ServerApiImpl implements ServerApi {
     @Override
     public ServerState pollServerState() throws IOException {
         return queryApi.pollServerState();
+    }
+
+    @Override
+    public void setToken(@Nullable String token) {
+        httpsApi.setToken(token);
     }
 
     @Override
