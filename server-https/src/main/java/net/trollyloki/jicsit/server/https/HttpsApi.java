@@ -28,24 +28,13 @@ import java.time.Duration;
 import java.util.Map;
 
 /**
- * An interface for the standard HTTPS API functions.
+ * An interface for the vanilla HTTPS API functions.
  */
 @NullMarked
-public class HttpsApi {
-
-    private final HttpsClient client;
+public interface HttpsApi {
 
     /**
-     * Creates an interface for the standard HTTPS API functions on top of an {@link HttpsClient}.
-     *
-     * @param client underlying client
-     */
-    public HttpsApi(HttpsClient client) {
-        this.client = client;
-    }
-
-    /**
-     * Creates a new {@link HttpsApi} instance for interfacing with the standard HTTPS API of a specific server.
+     * Creates a new {@link HttpsApi} instance for the vanilla HTTPS API on a specific server.
      * An API authentication token can be obtained by running
      * the {@code server.GenerateAPIToken} command in the dedicated server's console.
      * <p>
@@ -76,12 +65,21 @@ public class HttpsApi {
      * @return new {@link HttpsApi} instance
      * @throws IllegalArgumentException if {@code timeout} is non-positive or {@code host}/{@code port} is invalid
      * @see HttpsClient#HttpsClient(String, int, Duration, TrustManager)
-     * @see HttpsApi#HttpsApi(HttpsClient)
+     * @see HttpsClient#setToken(String)
      */
-    public static HttpsApi of(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager, @Nullable String token) {
+    static HttpsApi of(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager, @Nullable String token) {
         HttpsClient client = new HttpsClient(host, port, timeout, trustManager);
         client.setToken(token);
-        return new HttpsApi(client);
+        return of(client);
+    }
+
+    /**
+     * Creates a new {@link HttpsApi} instance for the vanilla HTTPS API on top of a {@link HttpsClient}.
+     *
+     * @param client underlying client
+     */
+    static HttpsApi of(HttpsClient client) {
+        return new HttpsApiImpl(client);
     }
 
     /**
@@ -92,13 +90,7 @@ public class HttpsApi {
      * @return {@link PrivilegeLevel}, {@link PrivilegeLevel#NOT_AUTHENTICATED} if no token is set
      * @throws IllegalArgumentException if the current authentication token is invalid
      */
-    public PrivilegeLevel getPrivilegeLevel() {
-        String token = client.getToken();
-        if (token == null)
-            return PrivilegeLevel.NOT_AUTHENTICATED;
-        else
-            return PrivilegeLevel.ofToken(token);
-    }
+    PrivilegeLevel getPrivilegeLevel();
 
     /**
      * Performs a health check on the server API.
@@ -111,9 +103,7 @@ public class HttpsApi {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public ServerHealth checkHealth(String customData) {
-        return client.request("HealthCheck", Map.of("clientCustomData", customData), ServerHealth.class);
-    }
+    ServerHealth checkHealth(String customData);
 
     /**
      * Performs a health check on the server API.
@@ -123,9 +113,7 @@ public class HttpsApi {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public ServerHealth checkHealth() {
-        return checkHealth("");
-    }
+    ServerHealth checkHealth();
 
     /**
      * Verifies that the current authentication token is still valid.
@@ -134,9 +122,7 @@ public class HttpsApi {
      * @throws ApiException          if an API error occurs
      * @throws RequestException      if an error occurs while sending the request
      */
-    public void verifyAuthenticationToken() {
-        client.request("VerifyAuthenticationToken", null);
-    }
+    void verifyAuthenticationToken();
 
     /**
      * Attempts to perform a passwordless login to the server as a player.
@@ -154,11 +140,7 @@ public class HttpsApi {
      * @see #removeClientPassword()
      * @see #getPrivilegeLevel()
      */
-    public void passwordlessLogin(PrivilegeLevel minimumPrivilegeLevel) {
-        client.requestToken("PasswordlessLogin", Map.of(
-                "minimumPrivilegeLevel", minimumPrivilegeLevel.value()
-        ));
-    }
+    void passwordlessLogin(PrivilegeLevel minimumPrivilegeLevel);
 
     /**
      * Attempts to log in to the server as a player using either the admin password or client password.
@@ -175,12 +157,7 @@ public class HttpsApi {
      * @see #setClientPassword(String)
      * @see #setAdminPassword(String)
      */
-    public void passwordLogin(PrivilegeLevel minimumPrivilegeLevel, String password) {
-        client.requestToken("PasswordLogin", Map.of(
-                "minimumPrivilegeLevel", minimumPrivilegeLevel.value(),
-                "password", password
-        ));
-    }
+    void passwordLogin(PrivilegeLevel minimumPrivilegeLevel, String password);
 
     /**
      * Retrieves the current state of the server.
@@ -189,11 +166,7 @@ public class HttpsApi {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public ServerGameState queryServerState() {
-        record Schema(ServerGameState serverGameState) {
-        }
-        return client.request("QueryServerState", null, Schema.class).serverGameState;
-    }
+    ServerGameState queryServerState();
 
     /**
      * Retrieves the currently applied and pending server options.
@@ -202,9 +175,7 @@ public class HttpsApi {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public ServerOptions getServerOptions() {
-        return client.request("GetServerOptions", null, ServerOptions.class);
-    }
+    ServerOptions getServerOptions();
 
     /**
      * Retrieves the currently applied Advanced Game Settings.
@@ -213,9 +184,7 @@ public class HttpsApi {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public AdvancedGameSettings getAdvancedGameSettings() {
-        return client.request("GetAdvancedGameSettings", null, AdvancedGameSettings.class);
-    }
+    AdvancedGameSettings getAdvancedGameSettings();
 
     /**
      * Applies new Advanced Game Settings values.
@@ -227,9 +196,7 @@ public class HttpsApi {
      * @throws RequestException if an error occurs while sending the request
      * @see AdvancedGameSettings
      */
-    public void applyAdvancedGameSettings(Map<String, String> settings) {
-        client.request("ApplyAdvancedGameSettings", Map.of("appliedAdvancedGameSettings", settings));
-    }
+    void applyAdvancedGameSettings(Map<String, String> settings);
 
     /**
      * Claims the server if it is not claimed.
@@ -244,12 +211,7 @@ public class HttpsApi {
      * @throws ApiException                  if an API error occurs
      * @throws RequestException              if an error occurs while sending the request
      */
-    public void claimServer(String name, String password) {
-        client.requestToken("ClaimServer", Map.of(
-                "serverName", name,
-                "adminPassword", password
-        ));
-    }
+    void claimServer(String name, String password);
 
     /**
      * Renames the server.
@@ -260,9 +222,7 @@ public class HttpsApi {
      * @throws ApiException              if an API error occurs
      * @throws RequestException          if an error occurs while sending the request
      */
-    public void renameServer(String name) {
-        client.request("RenameServer", Map.of("serverName", name));
-    }
+    void renameServer(String name);
 
     /**
      * Updates the currently set player password.
@@ -276,9 +236,7 @@ public class HttpsApi {
      * @throws ApiException              if an API error occurs
      * @throws RequestException          if an error occurs while sending the request
      */
-    public void setClientPassword(String password) {
-        client.request("SetClientPassword", Map.of("password", password));
-    }
+    void setClientPassword(String password);
 
     /**
      * Removes the currently set player password, allowing anyone to join the server.
@@ -290,9 +248,7 @@ public class HttpsApi {
      * @throws RequestException if an error occurs while sending the request
      * @see #setClientPassword(String)
      */
-    public void removeClientPassword() {
-        setClientPassword("");
-    }
+    void removeClientPassword();
 
     /**
      * Updates the currently set admin password.
@@ -310,9 +266,7 @@ public class HttpsApi {
      * @throws ApiException                  if an API error occurs
      * @throws RequestException              if an error occurs while sending the request
      */
-    public void setAdminPassword(String password) {
-        client.requestToken("SetAdminPassword", Map.of("password", password));
-    }
+    void setAdminPassword(String password);
 
     /**
      * Updates the session that the server will automatically load on startup.
@@ -324,9 +278,7 @@ public class HttpsApi {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public void setAutoLoadSessionName(String sessionName) {
-        client.request("SetAutoLoadSessionName", Map.of("sessionName", sessionName));
-    }
+    void setAutoLoadSessionName(String sessionName);
 
     /**
      * Runs a console command on the server.
@@ -337,9 +289,7 @@ public class HttpsApi {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public CommandResult runCommand(String command) {
-        return client.request("RunCommand", Map.of("command", command), CommandResult.class);
-    }
+    CommandResult runCommand(String command);
 
     /**
      * Shuts down the server.
@@ -348,9 +298,7 @@ public class HttpsApi {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public void shutdownServer() {
-        client.request("Shutdown", null);
-    }
+    void shutdownServer();
 
     /**
      * Applies new server options to the server.
@@ -361,9 +309,7 @@ public class HttpsApi {
      * @throws RequestException if an error occurs while sending the request
      * @see ServerOptions
      */
-    public void applyServerOptions(Map<String, String> options) {
-        client.request("ApplyServerOptions", Map.of("updatedServerOptions", options));
-    }
+    void applyServerOptions(Map<String, String> options);
 
     /**
      * Creates a new session on the server.
@@ -373,9 +319,7 @@ public class HttpsApi {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    public void createNewSession(NewGameData newGameData) {
-        client.request("CreateNewGame", Map.of("newGameData", newGameData));
-    }
+    void createNewSession(NewGameData newGameData);
 
     /**
      * Saves the currently loaded session into a new save file. The file name might be changed to satisfy system requirements.
@@ -386,9 +330,7 @@ public class HttpsApi {
      * @throws ApiException        if an API error occurs
      * @throws RequestException    if an error occurs while sending the request
      */
-    public void save(String saveName) {
-        client.request("SaveGame", Map.of("saveName", saveName));
-    }
+    void save(String saveName);
 
     /**
      * Deletes a save file on the server. The file name might be changed to satisfy system requirements.
@@ -399,9 +341,7 @@ public class HttpsApi {
      * @throws ApiException              if an API error occurs
      * @throws RequestException          if an error occurs while sending the request
      */
-    public void deleteSave(String saveName) {
-        client.request("DeleteSaveFile", Map.of("saveName", saveName));
-    }
+    void deleteSave(String saveName);
 
     /**
      * Deletes all save files on the server belonging to a specific session.
@@ -413,9 +353,7 @@ public class HttpsApi {
      * @throws ApiException                 if an API error occurs
      * @throws RequestException             if an error occurs while sending the request
      */
-    public void deleteSession(String sessionName) {
-        client.request("DeleteSaveSession", Map.of("sessionName", sessionName));
-    }
+    void deleteSession(String sessionName);
 
     /**
      * Enumerates all session saves available on the server.
@@ -426,9 +364,7 @@ public class HttpsApi {
      * @throws ApiException               if an API error occurs
      * @throws RequestException           if an error occurs while sending the request
      */
-    public ServerSessions enumerateSessions() {
-        return client.request("EnumerateSessions", null, ServerSessions.class);
-    }
+    ServerSessions enumerateSessions();
 
     /**
      * Loads a save file on the server, optionally with Advanced Game Settings enabled.
@@ -440,9 +376,7 @@ public class HttpsApi {
      * @throws ApiException        if an API error occurs
      * @throws RequestException    if an error occurs while sending the request
      */
-    public void loadSave(String saveName, boolean enableAdvancedGameSettings) {
-        client.request("LoadGame", Map.of("saveName", saveName, "enableAdvancedGameSettings", enableAdvancedGameSettings));
-    }
+    void loadSave(String saveName, boolean enableAdvancedGameSettings);
 
     /**
      * Uploads a save file to the server, and optionally loads it immediately.
@@ -459,13 +393,7 @@ public class HttpsApi {
      * @throws ApiException             if an API error occurs
      * @throws RequestException         if an error occurs while sending the request
      */
-    public void uploadSave(InputStream data, String saveName, boolean load, boolean enableAdvancedGameSettings) {
-        client.multipartRequest("UploadSaveGame", Map.of(
-                "saveName", saveName,
-                "loadSaveGame", load,
-                "enableAdvancedGameSettings", enableAdvancedGameSettings
-        ), "saveGameFile", data);
-    }
+    void uploadSave(InputStream data, String saveName, boolean load, boolean enableAdvancedGameSettings);
 
     /**
      * Downloads a save file from the server.
@@ -477,8 +405,6 @@ public class HttpsApi {
      * @throws ApiException          if an API error occurs
      * @throws RequestException      if an error occurs while sending the request
      */
-    public InputStream downloadSave(String saveName) {
-        return client.requestRaw("DownloadSaveGame", Map.of("saveName", saveName));
-    }
+    InputStream downloadSave(String saveName);
 
 }
