@@ -37,4 +37,19 @@ public record ServerState(ServerStatus status, int build, long flags, List<Serve
         return getFlag(0);
     }
 
+    /**
+     * Gets the version of a specific substate.
+     *
+     * @param id ID of the substate being changed
+     * @return current changelist of the substate, or {@code 0} if the substate is not listed
+     */
+    public short subStateVersion(byte id) {
+        for (ServerSubState subState : subStates) {
+            if (subState.id() == id) {
+                return subState.version();
+            }
+        }
+        return 0;
+    }
+
 }
