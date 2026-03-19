@@ -358,24 +358,24 @@ public final class MockSaveFiles {
                     new SaveFileInfo(
                             14,
                             new SaveHeader(
-                                    53,
-                                    472072,
+                                    52,
+                                    463028,
                                     "utf16",
                                     "Persistent_Level",
                                     "?skiponboarding",
-                                    "«PRE 1.2 EXPERIMENTAL»",
-                                    Duration.parse("PT13S"),
-                                    LocalDateTime.parse("2026-02-23T21:07:43.586").atZone(ZoneId.of("America/New_York")).toInstant(),
+                                    "⚠️⚠️⚠️",
+                                    Duration.parse("PT0S"),
+                                    LocalDateTime.parse("2026-03-18T22:40:10.060").atZone(ZoneId.of("America/New_York")).toInstant(),
                                     false,
                                     false,
                                     false
                             ),
-                            "«PRE 1.2 EXPERIMENTAL»_230226-210743",
-                            (byte) 0,
+                            "⚠️⚠️⚠️_autosave_0",
+                            (byte) 80,
                             40,
                             "",
                             0,
-                            "qKCHm0-FpeciCneVgEAhaw"
+                            "cOjofkdMiSTLqMOFuT4P9g"
                     ),
                     Map.of("skiponboarding", ""),
                     true,
@@ -385,24 +385,24 @@ public final class MockSaveFiles {
                     new SaveFileInfo(
                             14,
                             new SaveHeader(
-                                    53,
-                                    474567,
+                                    52,
+                                    463028,
                                     "empty-session-name",
                                     "Persistent_Level",
                                     "",
                                     "", // intentionally empty
-                                    Duration.parse("PT40S"),
-                                    LocalDateTime.parse("2026-02-23T21:21:59.809").atZone(ZoneId.of("America/New_York")).toInstant(),
+                                    Duration.parse("PT1M10S"),
+                                    LocalDateTime.parse("2026-03-18T22:45:40.281").atZone(ZoneId.of("America/New_York")).toInstant(),
                                     false,
                                     false,
                                     false
                             ),
                             "lol no session name",
-                            (byte) 0,
+                            (byte) 80,
                             40,
                             "",
                             0,
-                            "qKCHm0-FpeciCneVgEAhaw"
+                            "v8Ka701JwI0ZItGtbrZBeg"
                     ),
                     Map.of(),
                     true,
