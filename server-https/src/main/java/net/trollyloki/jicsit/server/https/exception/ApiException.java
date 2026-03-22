@@ -3,7 +3,6 @@ package net.trollyloki.jicsit.server.https.exception;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -17,32 +16,12 @@ public class ApiException extends RuntimeException {
     /***/
     private final @Nullable Map<String, Object> errorData;
 
-    private static String buildMessage(@Nullable String errorMessage, String errorCode) {
-        if (errorMessage == null) {
-            return errorCode;
-        }
-        return errorMessage + " (" + errorCode + ")";
-    }
-
-    /**
-     * Creates a new API exception.
-     *
-     * @param errorMessage optional error message
-     * @param errorCode    error code
-     * @param errorData    map of error data, or {@code null}
-     */
-    ApiException(@Nullable String errorMessage, String errorCode, @Nullable Map<String, Object> errorData) {
-        super(buildMessage(errorMessage, errorCode));
-        this.errorCode = errorCode;
-        this.errorData = errorData == null ? null : Collections.unmodifiableMap(errorData);
-    }
-
     /**
      * Record of constructor arguments for convenient subclassing.
      *
-     * @param errorCode    optional error message
-     * @param errorMessage error code
-     * @param errorData    map of error data, or {@code null}
+     * @param errorCode    error code
+     * @param errorMessage error message, possibly {@code null}
+     * @param errorData    map of error data, possibly {@code null}
      * @see ApiException#ApiException(ApiException.ErrorResponse)
      */
     protected record ErrorResponse(
@@ -53,20 +32,22 @@ public class ApiException extends RuntimeException {
     }
 
     /**
-     * Creates a new API exception from an error response record.
+     * Creates a new API exception.
      *
      * @param response {@link ErrorResponse}
      */
     protected ApiException(ErrorResponse response) {
-        this(response.errorMessage, response.errorCode, response.errorData);
+        super(response.errorMessage != null ? response.errorMessage : response.errorCode);
+        this.errorCode = response.errorCode;
+        this.errorData = response.errorData;
     }
 
     /**
-     * Creates an instance of an API exception subclass appropriate for the error code.
+     * Creates an instance of an API exception subclass appropriate for a specific error code.
      *
      * @param errorCode    error code
-     * @param errorMessage optional error message
-     * @param errorData    map of error data, or {@code null}
+     * @param errorMessage error message, possibly {@code null}
+     * @param errorData    map of error data, possibly {@code null}
      * @return API exception
      */
     public static ApiException createApiException(String errorCode, @Nullable String errorMessage, @Nullable Map<String, Object> errorData) {
