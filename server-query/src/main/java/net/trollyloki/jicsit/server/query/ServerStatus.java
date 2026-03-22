@@ -12,29 +12,36 @@ public enum ServerStatus {
      * The server is offline.
      * Servers will never send this as a response.
      */
-    OFFLINE(false),
+    OFFLINE("Offline", false),
 
     /**
      * The server is running, but no save is currently loaded.
      */
-    IDLE(true),
+    IDLE("Idle", true),
 
     /**
      * The server is currently loading a map.
      * In this state, the HTTPS API is unavailable.
      */
-    LOADING(false),
+    LOADING("Loading Game", false),
 
     /**
      * The server is running, and a save is loaded.
      * The server is joinable by players.
      */
-    PLAYING(true);
+    PLAYING("Game Ongoing", true);
 
+    private final String text;
     private final boolean httpsApiAvailable;
 
-    ServerStatus(boolean httpsApiAvailable) {
+    ServerStatus(String text, boolean httpsApiAvailable) {
+        this.text = text;
         this.httpsApiAvailable = httpsApiAvailable;
+    }
+
+    @Override
+    public String toString() {
+        return text;
     }
 
     /**
