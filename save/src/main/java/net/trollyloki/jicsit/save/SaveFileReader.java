@@ -43,7 +43,25 @@ public final class SaveFileReader {
                 .plusNanos((ticks % TICKS_PER_MILLIS) * NANOS_PER_TICK);
     }
 
-    private static final String FILE_EXTENSION = ".sav";
+    /**
+     * File extension used for save files (including the dot).
+     */
+    public static final String EXTENSION = ".sav";
+
+    /**
+     * Gets the save name displayed for a save file.
+     * <p>
+     * <strong>Note:</strong> The game ignores any files that do not have the ".sav" file extension.
+     *
+     * @param filename save file name
+     * @return save name
+     */
+    public static String saveNameOf(String filename) {
+        if (filename.endsWith(EXTENSION)) {
+            return filename.substring(0, filename.length() - EXTENSION.length());
+        }
+        return filename;
+    }
 
     /**
      * Gets the save name displayed for a save file.
@@ -59,12 +77,7 @@ public final class SaveFileReader {
         if (filenamePath == null) {
             throw new IllegalArgumentException("Save file path cannot be empty");
         }
-        String filename = filenamePath.toString();
-
-        if (filename.endsWith(FILE_EXTENSION)) {
-            return filename.substring(0, filename.length() - FILE_EXTENSION.length());
-        }
-        return filename;
+        return saveNameOf(filenamePath.toString());
     }
 
     /**
