@@ -5,6 +5,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.time.Duration;
 
@@ -27,7 +28,26 @@ public interface QueryApi extends Closeable {
      * @see QueryClient#setTimeout(int)
      */
     static QueryApi of(String host, int port, @Nullable Duration timeout) throws SocketException {
-        QueryClient client = new QueryClient(host, port);
+        return of(new QueryClient(host, port), timeout);
+    }
+
+    /**
+     * Creates a new {@link QueryApi} instance for the vanilla Lightweight Query API on a specific server.
+     *
+     * @param host    server host address
+     * @param port    server port
+     * @param timeout duration to wait for responses, or {@code null} to wait indefinitely
+     * @return new {@link QueryApi} instance
+     * @throws IllegalArgumentException if {@code timeout} is non-positive or {@code host}/{@code port} is invalid
+     * @throws SocketException          if the socket could not be opened
+     * @see QueryClient#QueryClient(InetAddress, int)
+     * @see QueryClient#setTimeout(int)
+     */
+    static QueryApi of(InetAddress host, int port, @Nullable Duration timeout) throws SocketException {
+        return of(new QueryClient(host, port), timeout);
+    }
+
+    private static QueryApi of(QueryClient client, @Nullable Duration timeout) throws SocketException {
         if (timeout != null) {
             long millis = timeout.toMillis();
             if (millis <= 0) throw new IllegalArgumentException("Timeout duration must be positive");

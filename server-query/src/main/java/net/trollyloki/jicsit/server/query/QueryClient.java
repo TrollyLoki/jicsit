@@ -8,6 +8,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
@@ -23,6 +24,25 @@ public class QueryClient implements Closeable {
     private int bufferSize = 1024;
     private final DatagramSocket socket;
 
+    private QueryClient(InetSocketAddress address) throws SocketException {
+        this.address = address;
+        if (address.isUnresolved())
+            throw new IllegalArgumentException("Unresolved address");
+        this.socket = new DatagramSocket();
+    }
+
+    /**
+     * Creates a new client.
+     *
+     * @param host server host address
+     * @param port server port
+     * @throws IllegalArgumentException if {@code host}/{@code port} is invalid
+     * @throws SocketException          if the socket could not be opened
+     */
+    public QueryClient(InetAddress host, int port) throws SocketException {
+        this(new InetSocketAddress(host, port));
+    }
+
     /**
      * Creates a new client.
      *
@@ -32,10 +52,7 @@ public class QueryClient implements Closeable {
      * @throws SocketException          if the socket could not be opened
      */
     public QueryClient(String host, int port) throws SocketException {
-        this.address = new InetSocketAddress(host, port);
-        if (address.isUnresolved())
-            throw new IllegalArgumentException("Failed to resolve address");
-        this.socket = new DatagramSocket();
+        this(new InetSocketAddress(host, port));
     }
 
     /**
