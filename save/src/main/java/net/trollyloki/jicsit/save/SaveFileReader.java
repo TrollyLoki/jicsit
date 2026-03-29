@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
@@ -148,7 +149,15 @@ public final class SaveFileReader {
         if (checksum != null) {
             try {
                 MessageDigest digest = MessageDigest.getInstance("MD5");
-                hash = digest.digest(stream.readAllBytes());
+
+                DigestInputStream digestStream = new DigestInputStream(stream, digest);
+                byte[] buffer = new byte[8192];
+                //noinspection StatementWithEmptyBody
+                while (digestStream.read(buffer) != -1) {
+                    // update digest
+                }
+
+                hash = digest.digest();
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
