@@ -8,6 +8,8 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -38,6 +40,9 @@ import java.util.Map;
  */
 @NullMarked
 public class HttpsClient {
+
+    @SuppressWarnings("deprecation") // multibyte characters don't work correctly without an explicitly set charset
+    private static final MediaType DATA_CONTENT_TYPE = MediaType.APPLICATION_JSON_UTF8;
 
     private final RestClient client;
     private @Nullable String token;
@@ -171,13 +176,15 @@ public class HttpsClient {
     }
 
     private RestClient.RequestBodySpec createRequest(String function, @Nullable Object functionData) {
-        return createRequest().contentType(MediaType.APPLICATION_JSON).body(createRequestBody(function, functionData));
+        return createRequest().contentType(DATA_CONTENT_TYPE).body(createRequestBody(function, functionData));
     }
 
     private RestClient.RequestBodySpec createMultipartRequest(String function, @Nullable Object functionData, String partName, InputStream partData) {
         MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
 
-        parts.add("data", createRequestBody(function, functionData));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(DATA_CONTENT_TYPE);
+        parts.add("data", new HttpEntity<>(createRequestBody(function, functionData), headers));
         parts.add(partName, new InputStreamResource(partData));
 
         return createRequest().contentType(MediaType.MULTIPART_FORM_DATA).body(parts);
