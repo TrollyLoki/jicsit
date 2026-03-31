@@ -215,6 +215,8 @@ public interface HttpsApi {
      * <p>
      * The current authentication token is automatically updated to gain {@link PrivilegeLevel#ADMIN} privileges for subsequent requests.
      * {@link #getPrivilegeLevel()} can be used to check the current privilege level.
+     * <p>
+     * <strong>Note:</strong> The server truncates the provided name if it is longer than 32 characters.
      *
      * @param name     server name
      * @param password plaintext admin password
@@ -227,6 +229,8 @@ public interface HttpsApi {
     /**
      * Renames the server.
      * This function requires {@link PrivilegeLevel#ADMIN}.
+     * <p>
+     * <strong>Note:</strong> The server truncates the provided name if it is longer than 32 characters.
      *
      * @param name new server name
      * @throws ServerNotClaimedException if the server is not claimed yet
