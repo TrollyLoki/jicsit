@@ -201,6 +201,8 @@ public interface HttpsApi {
      * Applies new Advanced Game Settings values.
      * <p>
      * This will automatically enable Advanced Game Settings for the currently loaded save if they are not enabled already.
+     * Additionally, this function seems to treat <strong>all</strong> settings as <strong>irreversible</strong>,
+     * meaning that once a setting is set to "True" it cannot be reset to "False" via the HTTPS API.
      *
      * @param settings new Advanced Game Settings values
      * @throws ApiException     if an API error occurs

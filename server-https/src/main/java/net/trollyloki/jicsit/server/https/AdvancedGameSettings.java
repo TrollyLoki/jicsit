@@ -126,11 +126,13 @@ public record AdvancedGameSettings(
      * Example values:
      * <ul>
      *     <li>{@code "0"} is Onboarding
-     *     <li>{@code "1"} is Phase 1 (Distribution Platform)
-     *     <li>{@code "2"} is Phase 2 (Construction Dock)
-     *     <li>{@code "3"} is Phase 3 (Main Body)
-     *     <li>{@code "4"} is Phase 4 (Propulsion Systems)
-     *     <li>{@code "5"} is Phase 5 (Assembly)
+     *     <li>{@code "1"} is Distribution Platform (Phase 1)
+     *     <li>{@code "2"} is Construction Dock (Phase 2)
+     *     <li>{@code "3"} is Main Body (Phase 3)
+     *     <li>{@code "4"} is Propulsion Systems (Phase 4)
+     *     <li>{@code "5"} is Assembly (Phase 5)
+     *     <li>{@code "6"} is Launch
+     *     <li>{@code "7"} is Completed
      * </ul>
      */
     public static final String SET_GAME_PHASE = "FG.GameRules.SetGamePhase";
