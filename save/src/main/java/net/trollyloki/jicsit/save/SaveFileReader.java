@@ -184,7 +184,8 @@ public final class SaveFileReader {
                 editorObjectVersion,
                 modMetadata,
                 modFlags,
-                guid
+                guid,
+                checksum == null ? null : new MD5Hash(checksum)
         );
     }
 

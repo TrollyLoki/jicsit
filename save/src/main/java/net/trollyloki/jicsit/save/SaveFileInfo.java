@@ -16,6 +16,7 @@ import org.jspecify.annotations.Nullable;
  * @param modMetadata         mod metadata, or {@code null} if unknown
  * @param modFlags            mod flags, or {@code 0} if the save is unmodded
  * @param guid                GUID for the session (regenerated only when creating a new game), or {@code null} if unknown
+ * @param checksum            MD5 hash of the original save data following the header, or {@code null} if unknown
  */
 @NullMarked
 public record SaveFileInfo(
@@ -26,7 +27,8 @@ public record SaveFileInfo(
         int editorObjectVersion,
         @Nullable String modMetadata,
         int modFlags,
-        @Nullable String guid
+        @Nullable String guid,
+        @Nullable MD5Hash checksum
 ) {
 
     private static final ObjectMapper MOD_METADATA_MAPPER = new ObjectMapper();

@@ -49,6 +49,7 @@ public final class MockSaveFiles {
                             0,
                             null,
                             0,
+                            null,
                             null
                     ),
                     Map.of("startloc", "Grass Fields", "sessionName", "ayyxd", "Visibility", "SV_Private"),
@@ -78,6 +79,7 @@ public final class MockSaveFiles {
                             0,
                             null,
                             0,
+                            null,
                             null
                     ),
                     Map.of("startloc", "Grass Fields", "sessionName", "Horizontal Challenge", "Visibility", "SV_Private"),
@@ -105,6 +107,7 @@ public final class MockSaveFiles {
                             38,
                             null,
                             0,
+                            null,
                             null
                     ),
                     Map.of("startloc", "Grass Fields", "sessionName", "Horizontal Challenge - Update 4", "Visibility", "SV_FriendsOnly"),
@@ -134,6 +137,7 @@ public final class MockSaveFiles {
                             38,
                             "INVALID_METADATA",
                             0,
+                            null,
                             null
                     ),
                     Map.of("startloc", "Rocky Desert", "sessionName", "Engine Experimental", "Visibility", "SV_Private"),
@@ -163,6 +167,7 @@ public final class MockSaveFiles {
                             40,
                             "",
                             0,
+                            null,
                             null
                     ),
                     Map.of("startloc", "Northern Forest", "sessionName", "LOST", "Visibility", "SV_Private"),
@@ -221,7 +226,8 @@ public final class MockSaveFiles {
                                     \t]\r
                                     }""",
                             1,
-                            "ASoaLaPzk02Jz81dKH0AcQ"
+                            "ASoaLaPzk02Jz81dKH0AcQ",
+                            null
                     ),
                     Map.of("startloc", "Grass Fields", "sessionName", "Gateworld", "Visibility", "SV_Private"),
                     true,
@@ -282,7 +288,8 @@ public final class MockSaveFiles {
                             40,
                             "{\"Version\":1,\"Mods\":[{\"Reference\":\"FicsItCam\",\"Name\":\"FicsIt-Cam\",\"Version\":\"0.3.8\"},{\"Reference\":\"SkyUI\",\"Name\":\"SkyUI\",\"Version\":\"1.0.11\"}],\"FullMapName\":\"/Game/FactoryGame/Map/GameLevel01/Persistent_Level.Persistent_Level\"}",
                             0,
-                            "5E1BpUVgj3zzvOG9M7wl3Q"
+                            "5E1BpUVgj3zzvOG9M7wl3Q",
+                            new MD5Hash(new byte[]{(byte) 0xAD, (byte) 0xDF, 0x22, 0x61, 0x01, 0x78, (byte) 0xA7, 0x44, (byte) 0x90, (byte) 0xC4, 0x34, (byte) 0xB5, (byte) 0x98, (byte) 0xF2, 0x08, 0x35})
                     ),
                     Map.of("Name", "Player", "startloc", "DuneDesert", "skiponboarding", "", "sessionName", "Swamptopia", "Visibility", "SV_Private", "advancedGameSettings", "FG.GameRules.StartingTier=DgAAAAQAAAAJAAAA,FG.GameRules.NoUnlockCost=AgAAAAQAAAABAAAA,FG.GameRules.SetGamePhase=DgAAAAQAAAAEAAAA,FG.GameRules.UnlockAllResearchSchematics=AgAAAAQAAAABAAAA,FG.GameRules.UnlockAllResourceSinkSchematics=AgAAAAQAAAABAAAA,FG.PlayerRules.NoBuildCost=AgAAAAQAAAABAAAA,FG.PlayerRules.FlightMode=AgAAAAQAAAABAAAA", "SessionSettings", "SML.ForceAllowCheats=AgAAAAQAAAAAAAAA"),
                     true,
@@ -326,7 +333,8 @@ public final class MockSaveFiles {
                             40,
                             "{\"Version\":1,\"Mods\":[{\"Reference\":\"BetterVehicleCamera\",\"Name\":\"BetterVehicleCamera\",\"Version\":\"1.4.1\"},{\"Reference\":\"CoffeeCupStudiosMod01\",\"Name\":\"Coffee Cup Studios Event\",\"Version\":\"1.10.1\"},{\"Reference\":\"RaceTimer\",\"Name\":\"Race Timer\",\"Version\":\"2.1.0\"}],\"FullMapName\":\"/Game/FactoryGame/Map/GameLevel01/Persistent_Level.Persistent_Level\"}",
                             1,
-                            "6pk920q5bZkgEHO4_JMi_g"
+                            "6pk920q5bZkgEHO4_JMi_g",
+                            new MD5Hash(new byte[]{(byte) 0xCE, (byte) 0xAA, 0x64, 0x4B, 0x1A, 0x05, (byte) 0xB7, (byte) 0xFC, 0x2F, 0x1D, (byte) 0x91, 0x3B, (byte) 0xD9, (byte) 0xA8, (byte) 0x80, 0x5F})
                     ),
                     Map.of("skiponboarding", "", "SessionSettings", "FicsitRemoteMonitoring.General.SplineSampleDistance=CgAAAAQAAAAAAJZC,RaceTimer.InstantCartDeploy=AgAAAAQAAAABAAAA,SML.ForceAllowCheats=AgAAAAQAAAAAAAAA"),
                     true,
@@ -375,7 +383,8 @@ public final class MockSaveFiles {
                             40,
                             "",
                             0,
-                            "cOjofkdMiSTLqMOFuT4P9g"
+                            "cOjofkdMiSTLqMOFuT4P9g",
+                            new MD5Hash(new byte[]{(byte) 0xDE, (byte) 0xD0, (byte) 0x9F, 0x03, 0x48, 0x59, 0x59, 0x1A, (byte) 0xE8, (byte) 0x91, 0x6F, 0x39, 0x35, (byte) 0x85, (byte) 0x9B, 0x56})
                     ),
                     Map.of("skiponboarding", ""),
                     true,
@@ -402,7 +411,8 @@ public final class MockSaveFiles {
                             40,
                             "",
                             0,
-                            "v8Ka701JwI0ZItGtbrZBeg"
+                            "v8Ka701JwI0ZItGtbrZBeg",
+                            new MD5Hash(new byte[]{(byte) 0xD4, 0x1D, (byte) 0x8C, (byte) 0xD9, (byte) 0x8F, 0x00, (byte) 0xB2, 0x04, (byte) 0xE9, (byte) 0x80, 0x09, (byte) 0x98, (byte) 0xEC, (byte) 0xF8, 0x42, 0x7E})
                     ),
                     Map.of(),
                     true,
