@@ -124,7 +124,9 @@ public interface HttpsApi {
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    ServerHealth checkHealth();
+    default ServerHealth checkHealth() {
+        return checkHealth("");
+    }
 
     /**
      * Verifies that the current authentication token is still valid.
@@ -265,7 +267,9 @@ public interface HttpsApi {
      * @throws RequestException if an error occurs while sending the request
      * @see #setClientPassword(String)
      */
-    void removeClientPassword();
+    default void removeClientPassword() {
+        setClientPassword("");
+    }
 
     /**
      * Updates the currently set admin password.

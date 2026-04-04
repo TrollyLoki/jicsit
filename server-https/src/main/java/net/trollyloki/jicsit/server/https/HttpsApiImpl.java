@@ -35,11 +35,6 @@ class HttpsApiImpl implements HttpsApi {
     }
 
     @Override
-    public ServerHealth checkHealth() {
-        return checkHealth("");
-    }
-
-    @Override
     public void verifyAuthenticationToken() {
         client.request("VerifyAuthenticationToken", null);
     }
@@ -97,11 +92,6 @@ class HttpsApiImpl implements HttpsApi {
     @Override
     public void setClientPassword(String password) {
         client.request("SetClientPassword", Map.of("password", password));
-    }
-
-    @Override
-    public void removeClientPassword() {
-        setClientPassword("");
     }
 
     @Override

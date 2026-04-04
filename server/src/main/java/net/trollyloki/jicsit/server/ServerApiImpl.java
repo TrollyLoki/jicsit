@@ -60,11 +60,6 @@ class ServerApiImpl implements ServerApi {
     }
 
     @Override
-    public ServerHealth checkHealth() {
-        return httpsApi.checkHealth();
-    }
-
-    @Override
     public void verifyAuthenticationToken() {
         httpsApi.verifyAuthenticationToken();
     }
@@ -115,11 +110,6 @@ class ServerApiImpl implements ServerApi {
     @Override
     public void setClientPassword(String password) {
         httpsApi.setClientPassword(password);
-    }
-
-    @Override
-    public void removeClientPassword() {
-        httpsApi.removeClientPassword();
     }
 
     @Override
