@@ -8,7 +8,6 @@ import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 @NullMarked
 class QueryApiImpl implements QueryApi {
@@ -40,26 +39,22 @@ class QueryApiImpl implements QueryApi {
     }
 
     @Override
-    public ServerState pollServerState(long cookie) throws IOException {
-        client.send(new Message(POLL_SERVER_STATE, new CookiePayload(cookie)));
-
-        // wait for the response
-        while (true) {
-            Message response = client.receive(PAYLOAD_READERS);
-
-            if (!(response.payload() instanceof ServerStatePayload payload))
-                continue; // ignore responses with unexpected type
-
-            if (payload.cookie() != cookie)
-                continue; // ignore responses with different cookie
-
-            return payload.state();
-        }
+    public boolean isClosed() {
+        return client.isClosed();
     }
 
     @Override
-    public ServerState pollServerState() throws IOException {
-        return pollServerState(ThreadLocalRandom.current().nextLong());
+    public void requestServerState(long cookie) throws IOException {
+        client.send(new Message(POLL_SERVER_STATE, new CookiePayload(cookie)));
+    }
+
+    @Override
+    public ServerStatePayload receiveServerState() throws IOException {
+        Message message;
+        do {
+            message = client.receive(PAYLOAD_READERS);
+        } while (!(message.payload() instanceof ServerStatePayload));
+        return (ServerStatePayload) message.payload();
     }
 
 }

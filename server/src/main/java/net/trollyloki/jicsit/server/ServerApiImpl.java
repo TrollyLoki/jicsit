@@ -10,7 +10,7 @@ import net.trollyloki.jicsit.server.https.ServerHealth;
 import net.trollyloki.jicsit.server.https.ServerOptions;
 import net.trollyloki.jicsit.server.https.ServerSessions;
 import net.trollyloki.jicsit.server.query.QueryApi;
-import net.trollyloki.jicsit.server.query.ServerState;
+import net.trollyloki.jicsit.server.query.protocol.payload.ServerStatePayload;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -35,13 +35,18 @@ class ServerApiImpl implements ServerApi {
     }
 
     @Override
-    public ServerState pollServerState(long cookie) throws IOException {
-        return queryApi.pollServerState(cookie);
+    public boolean isClosed() {
+        return queryApi.isClosed();
     }
 
     @Override
-    public ServerState pollServerState() throws IOException {
-        return queryApi.pollServerState();
+    public void requestServerState(long cookie) throws IOException {
+        queryApi.requestServerState(cookie);
+    }
+
+    @Override
+    public ServerStatePayload receiveServerState() throws IOException {
+        return queryApi.receiveServerState();
     }
 
     @Override

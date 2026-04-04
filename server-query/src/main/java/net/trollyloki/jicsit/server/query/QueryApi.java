@@ -1,5 +1,6 @@
 package net.trollyloki.jicsit.server.query;
 
+import net.trollyloki.jicsit.server.query.protocol.payload.ServerStatePayload;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.time.Duration;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * An interface for the vanilla Lightweight Query API flow.
@@ -73,20 +75,41 @@ public interface QueryApi extends Closeable {
     void close();
 
     /**
-     * Polls the server for its current state.
+     * Checks if the underlying client's socket is closed.
      *
-     * @param cookie unique identifier for the request
-     * @return current server state
-     * @throws java.nio.BufferOverflowException  if the request does not fit within the buffer size
-     * @throws java.nio.BufferUnderflowException if the response did not fit within the buffer size
-     * @throws java.net.SocketTimeoutException   if the timeout expires
-     * @throws ProtocolException                 if a protocol error occurs
-     * @throws IOException                       if an I/O error occurs or the socket is closed
+     * @return {@code true} if the socket has been closed
      */
-    ServerState pollServerState(long cookie) throws IOException;
+    boolean isClosed();
 
     /**
-     * Polls the server for its current state using a random number as the cookie.
+     * Sends a request to the server for its current state.
+     * Responses must be received separately using {@link #receiveServerState()}.
+     *
+     * @param cookie unique identifier for the request
+     * @throws java.nio.BufferOverflowException  if the request does not fit within the buffer size
+     * @throws IOException                       if an I/O error occurs or the socket is closed
+     * @see #pollServerState()
+     */
+    void requestServerState(long cookie) throws IOException;
+
+    /**
+     * Receives a response from the server with its current state.
+     *
+     * @return server state payload, including the request identifier and current server state
+     * @throws java.nio.BufferUnderflowException if the response did not fit within the buffer size
+     * @throws java.net.SocketTimeoutException   if the timeout expires
+     * @throws ProtocolException                 if a protocol error occurs
+     * @throws IOException                       if an I/O error occurs or the socket is closed
+     * @see #requestServerState(long)
+     */
+    ServerStatePayload receiveServerState() throws IOException;
+
+    /**
+     * Polls the server for its current state.
+     * <p>
+     * Since the Lightweight Query API uses UDP, there is no guarantee that this will succeed even if the server is online.
+     * Long-running applications should instead ping the server using {@link #requestServerState(long)}
+     * at regular intervals and receive responses separately using {@link #receiveServerState()}.
      *
      * @return current server state
      * @throws java.nio.BufferOverflowException  if the request does not fit within the buffer size
@@ -95,6 +118,16 @@ public interface QueryApi extends Closeable {
      * @throws ProtocolException                 if a protocol error occurs
      * @throws IOException                       if an I/O error occurs or the socket is closed
      */
-    ServerState pollServerState() throws IOException;
+    default ServerState pollServerState() throws IOException {
+        long cookie = ThreadLocalRandom.current().nextLong();
+
+        requestServerState(cookie);
+
+        ServerStatePayload response;
+        do {
+            response = receiveServerState();
+        } while (response.cookie() != cookie);
+        return response.state();
+    }
 
 }
