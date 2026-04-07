@@ -31,6 +31,20 @@ public final class SaveFileReader {
     private static final long TICKS_PER_MILLIS = 10_000;
     private static final long NANOS_PER_TICK = 1_000_000 / TICKS_PER_MILLIS;
 
+    private static int maxStringBytes = 8192;
+
+    /**
+     * Sets the maximum number of bytes in a string value.
+     * <p>
+     * If reading any string value would require buffering more than this many bytes,
+     * {@link #readInfo(Path)} and {@link #readInfo(String, InputStream)} will throw a {@link SaveFormatException}.
+     *
+     * @param numBytes maximum number of bytes
+     */
+    public static void setMaxStringBytes(int numBytes) {
+        maxStringBytes = numBytes;
+    }
+
     /**
      * Converts a .NET <a href="https://learn.microsoft.com/en-us/dotnet/api/system.datetime.ticks">DateTime.Ticks</a>
      * value to a Java {@link Instant}.
@@ -99,7 +113,7 @@ public final class SaveFileReader {
      * Reads information about a save file.
      *
      * @param saveName {@link SaveHeader#saveName() save name}
-     * @param stream stream containing the save file data
+     * @param stream   stream containing the save file data
      * @return {@link SaveFileInfo}
      * @throws IOException if an error occurs
      */
@@ -222,6 +236,13 @@ public final class SaveFileReader {
         if (length < 0) {
             charset = StandardCharsets.UTF_16LE;
             length *= -2;
+        }
+
+        if (length <= 0) {
+            throw new SaveFormatException("Invalid string length: " + length);
+        } else if (length > maxStringBytes) {
+            throw new SaveFormatException("Invalid string length: " + length + " > " + maxStringBytes
+                    + " (if this is expected setMaxStringBytes(int) can be used to increase the limit)");
         }
 
         String string = new String(readNBytesOrFail(stream, length), charset);

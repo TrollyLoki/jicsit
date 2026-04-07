@@ -15,6 +15,8 @@ public final class MockSaveFiles {
             Map.entry("invalid-save-files/invalid-header-version.sav", "Invalid header version: -42"),
             Map.entry("invalid-save-files/header-version-4.sav", "Unsupported header version: 4"),
             Map.entry("invalid-save-files/header-version-15.sav", "Unknown header version: 15"),
+            Map.entry("invalid-save-files/string-long.sav", "Invalid string length: 8194 > 8192 (if this is expected setMaxStringBytes(int) can be used to increase the limit)"),
+            Map.entry("invalid-save-files/string-length-min-value.sav", "Invalid string length: 0"),
             Map.entry("invalid-save-files/string-underflow.sav", "Unexpected end of file"),
             Map.entry("invalid-save-files/invalid-string.sav", "Invalid null terminator: !"),
             Map.entry("invalid-save-files/visibility-underflow.sav", "Unexpected end of file"),
