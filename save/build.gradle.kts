@@ -11,6 +11,7 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("save") {
+            artifactId = "jicsit-save"
             from(components["java"])
         }
     }

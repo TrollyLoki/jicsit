@@ -6,6 +6,7 @@ plugins {
 publishing {
     publications {
         create<MavenPublication>("serverQuery") {
+            artifactId = "jicsit-server-query"
             from(components["java"])
         }
     }

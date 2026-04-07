@@ -10,6 +10,7 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("server") {
+            artifactId = "jicsit-server"
             from(components["java"])
         }
     }

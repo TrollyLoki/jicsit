@@ -12,6 +12,7 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("serverHttps") {
+            artifactId = "jicsit-server-https"
             from(components["java"])
         }
     }
