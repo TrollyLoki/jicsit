@@ -1,10 +1,19 @@
 package net.trollyloki.jicsit.server;
 
+import net.trollyloki.jicsit.server.https.AdvancedGameSettings;
 import net.trollyloki.jicsit.server.https.HttpsApi;
 import net.trollyloki.jicsit.server.https.PrivilegeLevel;
+import net.trollyloki.jicsit.server.https.RequestException;
+import net.trollyloki.jicsit.server.https.ServerGameState;
+import net.trollyloki.jicsit.server.https.ServerOptions;
+import net.trollyloki.jicsit.server.https.ServerSessions;
+import net.trollyloki.jicsit.server.https.exception.ApiException;
+import net.trollyloki.jicsit.server.https.exception.EnumerateSessionsException;
 import net.trollyloki.jicsit.server.https.trustmanager.FingerprintBasedTrustManager;
 import net.trollyloki.jicsit.server.https.trustmanager.InsecureTrustManager;
 import net.trollyloki.jicsit.server.query.QueryApi;
+import net.trollyloki.jicsit.server.query.ServerSubState;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import javax.net.ssl.TrustManager;
@@ -14,6 +23,7 @@ import java.time.Duration;
 /**
  * An interface for the vanilla HTTPS and Lightweight Query API functions.
  */
+@NullMarked
 public interface ServerApi extends QueryApi, HttpsApi {
 
     /**
@@ -55,5 +65,59 @@ public interface ServerApi extends QueryApi, HttpsApi {
     static ServerApi of(String host, int port, @Nullable Duration timeout, @Nullable TrustManager trustManager) throws SocketException {
         return new ServerApiImpl(QueryApi.of(host, port, timeout), HttpsApi.of(host, port, timeout, trustManager));
     }
+
+    /**
+     * Retrieves the current state of the server.
+     * <p>
+     * Meaningful changes in the response to this function are indicated by the {@link ServerSubState#version() version}
+     * of {@link ServerSubState#SERVER_GAME_STATE}.
+     *
+     * @return {@link ServerGameState}
+     * @throws ApiException     if an API error occurs
+     * @throws RequestException if an error occurs while sending the request
+     */
+    @Override
+    ServerGameState queryServerState();
+
+    /**
+     * Retrieves the currently applied and pending server options.
+     * <p>
+     * Meaningful changes in the response to this function are indicated by the {@link ServerSubState#version() version}
+     * of {@link ServerSubState#SERVER_OPTIONS}.
+     *
+     * @return {@link ServerOptions}
+     * @throws ApiException     if an API error occurs
+     * @throws RequestException if an error occurs while sending the request
+     */
+    @Override
+    ServerOptions getServerOptions();
+
+    /**
+     * Retrieves the currently applied Advanced Game Settings.
+     * <p>
+     * Meaningful changes in the response to this function are indicated by the {@link ServerSubState#version() version}
+     * of {@link ServerSubState#ADVANCED_GAME_SETTINGS}.
+     *
+     * @return {@link AdvancedGameSettings}
+     * @throws ApiException     if an API error occurs
+     * @throws RequestException if an error occurs while sending the request
+     */
+    @Override
+    AdvancedGameSettings getAdvancedGameSettings();
+
+    /**
+     * Enumerates all session saves available on the server.
+     * This function requires {@link PrivilegeLevel#ADMIN}.
+     * <p>
+     * Meaningful changes in the response to this function are indicated by the {@link ServerSubState#version() version}
+     * of {@link ServerSubState#SAVE_COLLECTION}.
+     *
+     * @return {@link ServerSessions}
+     * @throws EnumerateSessionsException if session saves could not be enumerated
+     * @throws ApiException               if an API error occurs
+     * @throws RequestException           if an error occurs while sending the request
+     */
+    @Override
+    ServerSessions enumerateSessions();
 
 }

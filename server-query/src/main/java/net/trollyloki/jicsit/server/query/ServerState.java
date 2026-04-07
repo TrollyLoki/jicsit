@@ -42,6 +42,7 @@ public record ServerState(ServerStatus status, int build, long flags, List<Serve
      *
      * @param id ID of the substate being changed
      * @return current changelist of the substate, or {@code 0} if the substate is not listed
+     * @see ServerSubState
      */
     public short subStateVersion(byte id) {
         for (ServerSubState subState : subStates) {
