@@ -7,7 +7,6 @@ dependencies {
     api(project(":save"))
     implementation(libs.spring.web)
     implementation(libs.jackson.databind)
-    implementation(libs.jackson.datatype.jsr310)
 }
 
 publishing {

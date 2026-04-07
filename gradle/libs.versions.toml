@@ -1,8 +1,7 @@
 [versions]
-spring = "6.2.16"
-jackson = "2.21.1"
+spring = "7.0.6"
+jackson = "3.1.1"
 
 [libraries]
 spring-web = { module = "org.springframework:spring-web", version.ref = "spring" }
-jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
-jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+jackson-databind = { module = "tools.jackson.core:jackson-databind", version.ref = "jackson" }

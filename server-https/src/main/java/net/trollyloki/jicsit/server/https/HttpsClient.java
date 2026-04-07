@@ -1,6 +1,5 @@
 package net.trollyloki.jicsit.server.https;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import net.trollyloki.jicsit.server.https.exception.ApiException;
 import net.trollyloki.jicsit.server.https.trustmanager.FingerprintBasedTrustManager;
 import net.trollyloki.jicsit.server.https.trustmanager.InsecureTrustManager;
@@ -15,11 +14,11 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+import tools.jackson.databind.json.JsonMapper;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -30,6 +29,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
@@ -41,8 +41,8 @@ import java.util.Map;
 @NullMarked
 public class HttpsClient {
 
-    @SuppressWarnings("deprecation") // multibyte characters don't work correctly without an explicitly set charset
-    private static final MediaType DATA_CONTENT_TYPE = MediaType.APPLICATION_JSON_UTF8;
+    // multibyte characters don't work correctly without an explicitly set charset
+    private static final MediaType DATA_CONTENT_TYPE = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
 
     private final RestClient client;
     private @Nullable String token;
@@ -63,7 +63,7 @@ public class HttpsClient {
 
     }
 
-    private final ObjectMapper errorJsonMapper = Jackson2ObjectMapperBuilder.json().build();
+    private final JsonMapper errorJsonMapper = new JsonMapper();
 
     private void handleError(HttpRequest request, ClientHttpResponse response) throws IOException {
         throw errorJsonMapper.readValue(response.getBody(), ResponseSchema.class).createApiException();
@@ -198,18 +198,8 @@ public class HttpsClient {
         }
     }
 
-    private InputStream getRawResponse(RestClient.RequestBodySpec request) {
-        try {
-            //noinspection DataFlowIssue: will never return null because exchange function will never return null
-            return request.exchange((httpRequest, response) -> {
-                if (response.getStatusCode().isError()) {
-                    handleError(httpRequest, response);
-                }
-                return response.getBody();
-            }, false);
-        } catch (RestClientException e) {
-            throw new RequestException(e.getMessage(), e.getCause());
-        }
+    private @Nullable InputStream getRawResponse(RestClient.RequestBodySpec request) {
+        return request.retrieve().body(InputStream.class);
     }
 
     private <R> @Nullable R parseResponse(RestClient.RequestBodySpec request, Class<R> responseDataType) {
@@ -251,7 +241,11 @@ public class HttpsClient {
      * @throws RequestException if an error occurs while sending the request
      */
     public InputStream requestRaw(String function, @Nullable Object functionData) {
-        return getRawResponse(createRequest(function, functionData));
+        InputStream stream = getRawResponse(createRequest(function, functionData));
+        if (stream == null) {
+            throw new RequestException("Response contained no data");
+        }
+        return stream;
     }
 
     private <R> R executeRequest(RestClient.RequestBodySpec request, Class<R> responseDataType) {

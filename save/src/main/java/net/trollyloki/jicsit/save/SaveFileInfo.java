@@ -1,9 +1,10 @@
 package net.trollyloki.jicsit.save;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Information about a save file.
@@ -31,7 +32,8 @@ public record SaveFileInfo(
         @Nullable MD5Hash checksum
 ) {
 
-    private static final ObjectMapper MOD_METADATA_MAPPER = new ObjectMapper();
+    private static final JsonMapper MOD_METADATA_MAPPER = JsonMapper.builder()
+            .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES).build();
 
     /**
      * Attempts to parse the mod metadata.
@@ -46,7 +48,7 @@ public record SaveFileInfo(
 
         try {
             return MOD_METADATA_MAPPER.readValue(modMetadata, ModMetadata.class);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new SaveFormatException("Invalid mod metadata", e);
         }
     }

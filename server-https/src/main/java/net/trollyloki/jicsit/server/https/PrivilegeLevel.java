@@ -1,10 +1,10 @@
 package net.trollyloki.jicsit.server.https;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Map;
@@ -56,7 +56,7 @@ public enum PrivilegeLevel {
     }
 
     private static final Base64.Decoder TOKEN_DECODER = Base64.getDecoder();
-    private static final ObjectMapper TOKEN_MAPPER = new ObjectMapper();
+    private static final JsonMapper TOKEN_MAPPER = new JsonMapper();
 
     private static final Map<String, PrivilegeLevel> VALUE_MAP = Arrays.stream(values())
             .collect(Collectors.toUnmodifiableMap(PrivilegeLevel::value, pl -> pl));
@@ -78,10 +78,10 @@ public enum PrivilegeLevel {
             JsonNode tokenData = TOKEN_MAPPER.readTree(TOKEN_DECODER.decode(split[0]));
 
             JsonNode plNode = tokenData.get("pl");
-            if (plNode == null || !plNode.isTextual()) {
+            if (plNode == null || !plNode.isString()) {
                 throw new IllegalArgumentException("Invalid token JSON");
             }
-            String pl = plNode.asText();
+            String pl = plNode.asString();
 
             PrivilegeLevel level = VALUE_MAP.get(pl);
             if (level == null) {
@@ -89,7 +89,7 @@ public enum PrivilegeLevel {
             }
             return level;
 
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new IllegalArgumentException(e);
         }
     }
