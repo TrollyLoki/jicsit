@@ -13,7 +13,7 @@ public final class MockSaveFiles {
     public static final Map<String, String> INVALID = Map.ofEntries(
             Map.entry("invalid-save-files/header-underflow.sav", "Unexpected end of file"),
             Map.entry("invalid-save-files/invalid-header-version.sav", "Invalid header version: -42"),
-            Map.entry("invalid-save-files/header-version-4.sav", "Unsupported header version: 4"),
+            Map.entry("invalid-save-files/header-version-3.sav", "Unsupported header version: 3"),
             Map.entry("invalid-save-files/header-version-15.sav", "Unknown header version: 15"),
             Map.entry("invalid-save-files/string-long.sav", "Invalid string length: 8194 > 8192 (if this is expected setMaxStringBytes(int) can be used to increase the limit)"),
             Map.entry("invalid-save-files/string-length-min-value.sav", "Invalid string length: 0"),

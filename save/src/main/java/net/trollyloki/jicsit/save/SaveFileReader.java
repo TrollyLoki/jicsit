@@ -122,7 +122,7 @@ public final class SaveFileReader {
         int headerVersion = readInt(stream);
         if (headerVersion < 0) {
             throw new SaveFormatException("Invalid header version: " + headerVersion);
-        } else if (headerVersion < 5) {
+        } else if (headerVersion < 4) {
             throw new SaveFormatException("Unsupported header version: " + headerVersion);
         } else if (headerVersion > 14) {
             throw new SaveFormatException("Unknown header version: " + headerVersion);
@@ -136,7 +136,7 @@ public final class SaveFileReader {
         String sessionName = readString(stream);
         Duration playDuration = Duration.ofSeconds(readInt(stream));
         Instant saveTimestamp = ticksToInstant(readLong(stream));
-        byte sessionVisibility = readByte(stream);
+        byte sessionVisibility = headerVersion >= 5 ? readByte(stream) : 0;
         int editorObjectVersion = headerVersion >= 7 ? readInt(stream) : 0;
         String modMetadata = headerVersion >= 8 ? readString(stream) : null;
         int modFlags = headerVersion >= 8 ? readInt(stream) : 0;
