@@ -199,7 +199,11 @@ public class HttpsClient {
     }
 
     private @Nullable InputStream getRawResponse(RestClient.RequestBodySpec request) {
-        return request.retrieve().body(InputStream.class);
+        try {
+            return request.retrieve().body(InputStream.class);
+        } catch (RestClientException e) {
+            throw new RequestException(e.getMessage(), e.getCause());
+        }
     }
 
     private <R> @Nullable R parseResponse(RestClient.RequestBodySpec request, Class<R> responseDataType) {
