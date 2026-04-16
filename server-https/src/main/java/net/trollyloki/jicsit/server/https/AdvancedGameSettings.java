@@ -37,6 +37,7 @@ public record AdvancedGameSettings(
 
     /**
      * Buildings will function without power.
+     * <p>
      * Applies to the entire session and affects all players.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
@@ -45,6 +46,7 @@ public record AdvancedGameSettings(
 
     /**
      * Vehicles, drones, portals, and the power augmenter will function without any fuel.
+     * <p>
      * Applies to the entire session and affects all players.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
@@ -53,6 +55,7 @@ public record AdvancedGameSettings(
 
     /**
      * Anything that needs to be unlocked can be unlocked without having to pay any resources or other costs.
+     * <p>
      * Applies to the entire session and affects all players.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
@@ -61,6 +64,7 @@ public record AdvancedGameSettings(
 
     /**
      * Immediately unlocks alternate recipes when all their requirements are met.
+     * <p>
      * Applies to the entire session and affects all players.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
@@ -69,6 +73,7 @@ public record AdvancedGameSettings(
 
     /**
      * Prevents arachnid creatures from spawning.
+     * <p>
      * Applies to the entire session and affects all players.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
@@ -77,6 +82,7 @@ public record AdvancedGameSettings(
 
     /**
      * Unlocks all tiers in the game.
+     * <p>
      * <strong>Irreversible</strong>, applies to the entire session and affects all players.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
@@ -85,6 +91,7 @@ public record AdvancedGameSettings(
 
     /**
      * Unlocks all research in the MAM.
+     * <p>
      * <strong>Irreversible</strong>, applies to the entire session and affects all players.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
@@ -93,6 +100,7 @@ public record AdvancedGameSettings(
 
     /**
      * Unlocks everything in the AWESOME Shop.
+     * <p>
      * <strong>Irreversible</strong>, applies to the entire session and affects all players.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
@@ -101,6 +109,7 @@ public record AdvancedGameSettings(
 
     /**
      * Selects the tier the game should start at, and adjusts the Space Elevator phase accordingly.
+     * <p>
      * Applies to the entire session and affects all players.
      * <p>
      * Example values:
@@ -115,12 +124,14 @@ public record AdvancedGameSettings(
      *     <li>{@code "7"} is Tier 7
      *     <li>{@code "8"} is Tier 8
      *     <li>{@code "9"} is Tier 9
+     *     <li>{@code "10"} is Unlock All Tiers
      * </ul>
      */
     public static final String STARTING_TIER = "FG.GameRules.StartingTier";
 
     /**
      * Selects the Space Elevator phase, and adjusts the current tier accordingly.
+     * <p>
      * <strong>Irreversible</strong>, applies to the entire session and affects all players.
      * <p>
      * Example values:
@@ -144,7 +155,8 @@ public record AdvancedGameSettings(
 
     /**
      * Buildings, blueprints, and customizer items have no cost.
-     * This setting is per-player.
+     * <p>
+     * Only applies to new players.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
      */
@@ -152,7 +164,8 @@ public record AdvancedGameSettings(
 
     /**
      * Makes the player invincible.
-     * This setting is per-player.
+     * <p>
+     * Only applies to new players.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
      */
@@ -160,7 +173,8 @@ public record AdvancedGameSettings(
 
     /**
      * Enables flight.
-     * This setting is per-player.
+     * <p>
+     * Only applies to new players.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
      */
