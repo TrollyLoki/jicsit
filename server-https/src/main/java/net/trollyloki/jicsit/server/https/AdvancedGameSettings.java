@@ -3,6 +3,7 @@ package net.trollyloki.jicsit.server.https;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -108,7 +109,7 @@ public record AdvancedGameSettings(
     public static final String UNLOCK_ALL_IN_AWESOME_SHOP = "FG.GameRules.UnlockAllResourceSinkSchematics";
 
     /**
-     * Selects the tier the game should start at, and adjusts the Space Elevator phase accordingly.
+     * Sets the tier the game should start at.
      * <p>
      * Applies to the entire session and affects all players.
      * <p>
@@ -130,7 +131,7 @@ public record AdvancedGameSettings(
     public static final String STARTING_TIER = "FG.GameRules.StartingTier";
 
     /**
-     * Selects the Space Elevator phase, and adjusts the current tier accordingly.
+     * Sets the Space Elevator phase.
      * <p>
      * <strong>Irreversible</strong>, applies to the entire session and affects all players.
      * <p>
@@ -179,5 +180,193 @@ public record AdvancedGameSettings(
      * Example values: {@code "True"} or {@code "False"}
      */
     public static final String FLIGHT_MODE = "FG.PlayerRules.FlightMode";
+
+    /**
+     * Creates a builder for Advanced Game Settings.
+     *
+     * @return new builder
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * A builder for Advanced Game Settings.
+     */
+    public static final class Builder {
+
+        private final Map<String, String> map;
+
+        private Builder() {
+            this.map = new HashMap<>();
+        }
+
+        /**
+         * Creates a map containing the settings applied to this builder.
+         *
+         * @return settings map
+         * @see HttpsApi#applyAdvancedGameSettings(Map)
+         * @see NewGameData
+         */
+        public Map<String, String> build() {
+            return Map.copyOf(map);
+        }
+
+        private Builder putTrue(String key) {
+            map.put(key, "True");
+            return this;
+        }
+
+        /**
+         * Buildings will function without power.
+         * <p>
+         * Applies to the entire session and affects all players.
+         *
+         * @return this builder
+         */
+        public Builder noPower() {
+            return putTrue(NO_POWER);
+        }
+
+        /**
+         * Vehicles, drones, portals, and the power augmenter will function without any fuel.
+         * <p>
+         * Applies to the entire session and affects all players.
+         *
+         * @return this builder
+         */
+        public Builder noFuel() {
+            return putTrue(NO_FUEL);
+        }
+
+        /**
+         * Anything that needs to be unlocked can be unlocked without having to pay any resources or other costs.
+         * <p>
+         * Applies to the entire session and affects all players.
+         *
+         * @return this builder
+         */
+        public Builder noUnlockCost() {
+            return putTrue(NO_UNLOCK_COST);
+        }
+
+        /**
+         * Immediately unlocks alternate recipes when all their requirements are met.
+         * <p>
+         * Applies to the entire session and affects all players.
+         *
+         * @return this builder
+         */
+        public Builder unlockAlternateRecipesInstantly() {
+            return putTrue(UNLOCK_ALTERNATE_RECIPES_INSTANTLY);
+        }
+
+        /**
+         * Prevents arachnid creatures from spawning.
+         * <p>
+         * Applies to the entire session and affects all players.
+         *
+         * @return this builder
+         */
+        public Builder disableArachnidCreatures() {
+            return putTrue(DISABLE_ARACHNID_CREATURES);
+        }
+
+        /**
+         * Unlocks all tiers in the game.
+         * <p>
+         * <strong>Irreversible</strong>, applies to the entire session and affects all players.
+         *
+         * @return this builder
+         */
+        public Builder unlockAllTiers() {
+            map.put(STARTING_TIER, "10");
+            return putTrue(UNLOCK_ALL_TIERS);
+        }
+
+        /**
+         * Unlocks all research in the MAM.
+         * <p>
+         * <strong>Irreversible</strong>, applies to the entire session and affects all players.
+         *
+         * @return this builder
+         */
+        public Builder unlockAllResearch() {
+            return putTrue(UNLOCK_ALL_RESEARCH);
+        }
+
+        /**
+         * Unlocks everything in the AWESOME Shop.
+         * <p>
+         * <strong>Irreversible</strong>, applies to the entire session and affects all players.
+         *
+         * @return this builder
+         */
+        public Builder unlockAllInAwesomeShop() {
+            return putTrue(UNLOCK_ALL_IN_AWESOME_SHOP);
+        }
+
+        /**
+         * Sets the tier the game should start at.
+         * <p>
+         * Applies to the entire session and affects all players.
+         *
+         * @param tier starting tier (Onboarding is Tier 0)
+         * @return this builder
+         */
+        public Builder startingTier(int tier) {
+            if (tier < 0) throw new IllegalArgumentException("Starting tier cannot be negative");
+            map.put(STARTING_TIER, Integer.toString(tier));
+            return this;
+        }
+
+        /**
+         * Sets the Space Elevator phase.
+         * <p>
+         * <strong>Irreversible</strong>, applies to the entire session and affects all players.
+         *
+         * @param phase game phase (Launch is Phase 6 and Completed is Phase 7)
+         * @return this builder
+         */
+        public Builder setGamePhase(int phase) {
+            if (phase < 0) throw new IllegalArgumentException("Game phase cannot be negative");
+            map.put(SET_GAME_PHASE, Integer.toString(phase));
+            return this;
+        }
+
+        /**
+         * Buildings, blueprints, and customizer items have no cost.
+         * <p>
+         * Only applies to new players.
+         *
+         * @return this builder
+         */
+        public Builder noBuildCost() {
+            return putTrue(NO_BUILD_COST);
+        }
+
+        /**
+         * Makes the player invincible.
+         * <p>
+         * Only applies to new players.
+         *
+         * @return this builder
+         */
+        public Builder godMode() {
+            return putTrue(GOD_MODE);
+        }
+
+        /**
+         * Enables flight.
+         * <p>
+         * Only applies to new players.
+         *
+         * @return this builder
+         */
+        public Builder flightMode() {
+            return putTrue(FLIGHT_MODE);
+        }
+
+    }
 
 }
