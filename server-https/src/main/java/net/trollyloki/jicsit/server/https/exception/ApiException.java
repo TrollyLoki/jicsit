@@ -37,7 +37,7 @@ public class ApiException extends RuntimeException {
      * @param response {@link ErrorResponse}
      */
     protected ApiException(ErrorResponse response) {
-        super(response.errorMessage != null ? response.errorMessage : response.errorCode);
+        super(response.errorMessage != null && !response.errorMessage.isEmpty() ? response.errorMessage : response.errorCode);
         this.errorCode = response.errorCode;
         this.errorData = response.errorData;
     }
