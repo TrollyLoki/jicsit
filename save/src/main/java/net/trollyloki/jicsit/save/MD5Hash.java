@@ -3,6 +3,7 @@ package net.trollyloki.jicsit.save;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Arrays;
+import java.util.HexFormat;
 
 /**
  * A 128-bit MD5 hash.
@@ -42,6 +43,13 @@ public record MD5Hash(byte[] bytes) {
     @Override
     public int hashCode() {
         return Arrays.hashCode(this.bytes);
+    }
+
+    private static final HexFormat HEX_FORMAT = HexFormat.of();
+
+    @Override
+    public String toString() {
+        return HEX_FORMAT.formatHex(this.bytes);
     }
 
 }
