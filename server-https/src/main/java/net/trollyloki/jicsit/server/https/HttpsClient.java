@@ -121,7 +121,10 @@ public class HttpsClient {
         RestClient.Builder builder = RestClient.builder();
         builder.requestFactory(new JdkClientHttpRequestFactory(httpClientBuilder.build()));
 
-        builder.bufferContent((uri, method) -> true); // server requires all requests to have a content-length header
+        builder.requestInterceptor((request, body, execution) -> {
+            // force buffering of requests (but NOT responses) because the server requires an explicit content-length
+            return execution.execute(request, body);
+        });
 
         // error handling
         builder.defaultStatusHandler(HttpStatusCode::isError, this::handleError);
