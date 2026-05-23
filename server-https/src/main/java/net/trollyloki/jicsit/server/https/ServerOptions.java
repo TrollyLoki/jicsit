@@ -3,6 +3,9 @@ package net.trollyloki.jicsit.server.https;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jspecify.annotations.NullMarked;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -98,5 +101,135 @@ public record ServerOptions(
      * </ul>
      */
     public static final String NETWORK_QUALITY = "FG.NetworkQuality";
+
+    /**
+     * Network quality options.
+     *
+     * @see #NETWORK_QUALITY
+     * @see Builder#networkQuality(NetworkQuality)
+     */
+    public enum NetworkQuality {
+        LOW, MEDIUM, HIGH, ULTRA
+    }
+
+    /**
+     * Creates a builder for server options.
+     *
+     * @return new builder
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * A builder for server options.
+     */
+    public static final class Builder {
+
+        private static final double NANOS_PER_SECOND = 1_000_000_000.0;
+        private static final double NANOS_PER_MINUTE = 60 * NANOS_PER_SECOND;
+
+        private final Map<String, String> map;
+
+        private Builder() {
+            this.map = new HashMap<>();
+        }
+
+        /**
+         * Creates a map containing the options applied to this builder.
+         *
+         * @return options map
+         * @see HttpsApi#applyServerOptions(Map)
+         */
+        public Map<String, String> build() {
+            return Map.copyOf(map);
+        }
+
+        private Builder putBoolean(String key, boolean value) {
+            map.put(key, value ? "True" : "False");
+            return this;
+        }
+
+        private Builder putDouble(String key, double value) {
+            map.put(key, Double.toString(value));
+            return this;
+        }
+
+        private Builder putEnum(String key, Enum<?> constant) {
+            map.put(key, Integer.toString(constant.ordinal()));
+            return this;
+        }
+
+        /**
+         * Changes if the server should be automatically paused when no players are connected.
+         *
+         * @param enabled {@code true} if it should pause, or {@code false} if it should not
+         * @return this builder
+         */
+        public Builder autoPause(boolean enabled) {
+            return putBoolean(AUTO_PAUSE, enabled);
+        }
+
+        /**
+         * Changes if the server should automatically save the game when a player disconnects.
+         *
+         * @param enabled {@code true} if it should save, or {@code false} if it should not
+         * @return this builder
+         */
+        public Builder autosaveOnDisconnect(boolean enabled) {
+            return putBoolean(AUTO_SAVE_ON_DISCONNECT, enabled);
+        }
+
+        /**
+         * Changes if all seasonal event content (such as FICSMAS) should be removed from the game.
+         *
+         * @param disabled {@code true} if events should be disabled, or {@code false} if they should remain enabled
+         * @return this builder
+         */
+        public Builder disableSeasonalEvents(boolean disabled) {
+            return putBoolean(DISABLE_SEASONAL_EVENTS, disabled);
+        }
+
+        /**
+         * Changes the amount of time between autosaves.
+         *
+         * @param interval duration between autosaves
+         * @return this builder
+         */
+        public Builder autosaveInterval(Duration interval) {
+            return putDouble(AUTOSAVE_INTERVAL, interval.getSeconds() + interval.getNano() / NANOS_PER_SECOND);
+        }
+
+        /**
+         * Changes the time of day the server should restart at.
+         *
+         * @param time time of day
+         * @return this builder
+         */
+        public Builder serverRestartSchedule(LocalTime time) {
+            return putDouble(SERVER_RESTART_SCHEDULE, time.toNanoOfDay() / NANOS_PER_MINUTE);
+        }
+
+        /**
+         * Changes if data can be sent to Coffee Stain Studios while playing. Requires a restart to apply.
+         *
+         * @param enabled {@code true} if data can be sent, or {@code false} if it cannot
+         * @return this builder
+         */
+        public Builder sendGameplayData(boolean enabled) {
+            return putBoolean(SEND_GAMEPLAY_DATA, enabled);
+        }
+
+        /**
+         * Changes network quality.
+         *
+         * @param quality {@link NetworkQuality}
+         * @return this builder
+         */
+        public Builder networkQuality(NetworkQuality quality) {
+            return putEnum(NETWORK_QUALITY, quality);
+        }
+
+    }
 
 }
