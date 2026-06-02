@@ -7,7 +7,6 @@ import net.trollyloki.jicsit.server.https.exception.DeleteSessionFailedException
 import net.trollyloki.jicsit.server.https.exception.EnumerateSessionsException;
 import net.trollyloki.jicsit.server.https.exception.FileNotFoundException;
 import net.trollyloki.jicsit.server.https.exception.InvalidSaveException;
-import net.trollyloki.jicsit.server.https.exception.InvalidTokenException;
 import net.trollyloki.jicsit.server.https.exception.LoadFailedException;
 import net.trollyloki.jicsit.server.https.exception.PasswordInUseException;
 import net.trollyloki.jicsit.server.https.exception.PasswordlessLoginNotPossibleException;
@@ -15,6 +14,7 @@ import net.trollyloki.jicsit.server.https.exception.SaveFailedException;
 import net.trollyloki.jicsit.server.https.exception.ServerAlreadyClaimedException;
 import net.trollyloki.jicsit.server.https.exception.ServerNotClaimedException;
 import net.trollyloki.jicsit.server.https.exception.SessionNotFoundException;
+import net.trollyloki.jicsit.server.https.exception.TokenValidationException;
 import net.trollyloki.jicsit.server.https.exception.UnsupportedSaveException;
 import net.trollyloki.jicsit.server.https.exception.WrongPasswordException;
 import net.trollyloki.jicsit.server.https.trustmanager.FingerprintBasedTrustManager;
@@ -129,11 +129,23 @@ public interface HttpsApi {
     }
 
     /**
+     * Verifies that an authentication token is valid.
+     *
+     * @param token authentication token
+     * @throws TokenValidationException if the token is invalid
+     * @throws ApiException             if an API error occurs
+     * @throws RequestException         if an error occurs while sending the request
+     */
+    void verifyAuthenticationToken(AuthenticationToken token);
+
+    /**
      * Verifies that the current authentication token is still valid.
      *
-     * @throws InvalidTokenException if the token is invalid
-     * @throws ApiException          if an API error occurs
-     * @throws RequestException      if an error occurs while sending the request
+     * @throws IllegalStateException    if no token is set
+     * @throws IllegalArgumentException if the token is not in the correct format
+     * @throws TokenValidationException if the token is invalid
+     * @throws ApiException             if an API error occurs
+     * @throws RequestException         if an error occurs while sending the request
      */
     void verifyAuthenticationToken();
 
@@ -191,27 +203,27 @@ public interface HttpsApi {
     ServerOptions getServerOptions();
 
     /**
-     * Retrieves the currently applied Advanced Game Settings.
+     * Retrieves the currently applied Creative Mode settings.
      *
-     * @return {@link AdvancedGameSettings}
+     * @return {@link CreativeModeSettings}
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
      */
-    AdvancedGameSettings getAdvancedGameSettings();
+    CreativeModeSettings getCreativeModeSettings();
 
     /**
-     * Applies new Advanced Game Settings values.
+     * Applies new Creative Mode setting values.
      * <p>
-     * This will automatically enable Advanced Game Settings for the currently loaded save if they are not enabled already.
+     * This will automatically enable Creative Mode for the currently loaded save if it is not enabled already.
      * Additionally, this function seems to treat <strong>all</strong> settings as <strong>irreversible</strong>,
      * meaning that once a setting is set to "True" it cannot be reset to "False" via the HTTPS API.
      *
-     * @param settings new Advanced Game Settings values
+     * @param settings new Creative Mode setting values
      * @throws ApiException     if an API error occurs
      * @throws RequestException if an error occurs while sending the request
-     * @see AdvancedGameSettings
+     * @see CreativeModeSettings
      */
-    void applyAdvancedGameSettings(Map<String, String> settings);
+    void applyCreativeModeSettings(Map<String, String> settings);
 
     /**
      * Claims the server if it is not claimed.
@@ -388,25 +400,25 @@ public interface HttpsApi {
     ServerSessions enumerateSessions();
 
     /**
-     * Loads a save file on the server, optionally with Advanced Game Settings enabled.
+     * Loads a save file on the server, optionally with Creative Mode enabled.
      * This function requires {@link PrivilegeLevel#ADMIN}.
      *
-     * @param saveName                   name of the save file to load (without the extension)
-     * @param enableAdvancedGameSettings {@code true} if the file should be loaded with Advanced Game Settings enabled
+     * @param saveName           name of the save file to load (without the extension)
+     * @param enableCreativeMode {@code true} if the file should be loaded with Creative Mode enabled
      * @throws LoadFailedException if the save file could not be loaded
      * @throws ApiException        if an API error occurs
      * @throws RequestException    if an error occurs while sending the request
      */
-    void loadSave(String saveName, boolean enableAdvancedGameSettings);
+    void loadSave(String saveName, boolean enableCreativeMode);
 
     /**
      * Uploads a save file to the server, and optionally loads it immediately.
      * This function requires {@link PrivilegeLevel#ADMIN}.
      *
-     * @param data                       input stream containing the save file data
-     * @param saveName                   name of the save file to create (without the extension)
-     * @param load                       {@code true} if the file should be loaded immediately
-     * @param enableAdvancedGameSettings {@code true} if the file should be loaded with Advanced Game Settings enabled
+     * @param data               input stream containing the save file data
+     * @param saveName           name of the save file to create (without the extension)
+     * @param load               {@code true} if the file should be loaded immediately
+     * @param enableCreativeMode {@code true} if the file should be loaded with Creative Mode enabled
      * @throws InvalidSaveException     if the save file is invalid
      * @throws UnsupportedSaveException if the save file is not supported by the server
      * @throws SaveFailedException      if the file could not be saved
@@ -414,7 +426,7 @@ public interface HttpsApi {
      * @throws ApiException             if an API error occurs
      * @throws RequestException         if an error occurs while sending the request
      */
-    void uploadSave(InputStream data, String saveName, boolean load, boolean enableAdvancedGameSettings);
+    void uploadSave(InputStream data, String saveName, boolean load, boolean enableCreativeMode);
 
     /**
      * Downloads a save file from the server.

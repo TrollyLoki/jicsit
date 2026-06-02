@@ -70,6 +70,7 @@ public class ApiException extends RuntimeException {
             case "invalid_save_game" -> new InvalidSaveException(response);
             case "unsupported_save_game" -> new UnsupportedSaveException(response);
             case "file_not_found" -> new FileNotFoundException(response);
+            case "token_validation_failed" -> new TokenValidationException(response);
             default -> new ApiException(response);
         };
     }

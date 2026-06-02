@@ -86,8 +86,8 @@ public interface QueryApi extends Closeable {
      * Responses must be received separately using {@link #receiveServerState()}.
      *
      * @param cookie unique identifier for the request
-     * @throws java.nio.BufferOverflowException  if the request does not fit within the buffer size
-     * @throws IOException                       if an I/O error occurs or the socket is closed
+     * @throws java.nio.BufferOverflowException if the request does not fit within the buffer size
+     * @throws IOException                      if an I/O error occurs or the socket is closed
      * @see #pollServerState()
      */
     void requestServerState(long cookie) throws IOException;

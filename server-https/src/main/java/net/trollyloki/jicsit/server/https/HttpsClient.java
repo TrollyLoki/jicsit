@@ -294,10 +294,10 @@ public class HttpsClient {
     /**
      * Sends a multipart request to the server.
      *
-     * @param function     name of the API function to execute
-     * @param functionData data for the function, or {@code null} to not include data in the request
-     * @param partName     name of the other part of the request
-     * @param partData     input stream containing the raw data for the other part of the request
+     * @param function         name of the API function to execute
+     * @param functionData     data for the function, or {@code null} to not include data in the request
+     * @param partName         name of the other part of the request
+     * @param partData         input stream containing the raw data for the other part of the request
      * @param responseDataType class to parse the response data into
      * @param <R>              data type to return
      * @return response data

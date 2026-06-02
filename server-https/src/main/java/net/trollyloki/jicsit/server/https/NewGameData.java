@@ -6,6 +6,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Parameters for a new session.
@@ -22,9 +23,10 @@ import java.util.Map;
  *
  * @param sessionName          name of the session
  * @param mapName              path name to the map package, default level if not specified
- * @param startingLocation     name of the starting location to use, or empty for a random starting location
+ * @param startingLocation     name of the starting location to use
  * @param skipOnboarding       {@code true} if onboarding should be skipped, or {@code false} if it shouldn't be skipped
- * @param advancedGameSettings {@link AdvancedGameSettings Advanced Game Settings} to apply
+ * @param creativeModeSettings {@link CreativeModeSettings} to apply
+ * @param gameModeSettings     {@link GameModeSettings} to apply
  * @param customOptions        custom options to pass to the session URL, not used by vanilla servers
  */
 @NullMarked
@@ -33,7 +35,8 @@ public record NewGameData(
         @Nullable String mapName,
         String startingLocation,
         @JsonProperty("bSkipOnboarding") boolean skipOnboarding,
-        Map<String, String> advancedGameSettings,
+        @JsonProperty("advancedGameSettings") Map<String, String> creativeModeSettings,
+        Map<String, String> gameModeSettings,
         @JsonProperty("customOptionsOnlyForModding") Map<String, String> customOptions
 ) {
 
@@ -58,103 +61,6 @@ public record NewGameData(
     public static final String DUNE_DESERT = "DuneDesert"; // yes this one doesn't have a space, ask the devs
 
     /**
-     * Parameters for a new session on the default map.
-     * <p>
-     * <strong>Note:</strong> Onboarding is always skipped on vanilla servers.
-     * <p>
-     * Vanilla servers support the following starting locations:
-     * <ul>
-     *     <li>{@link #GRASS_FIELDS}
-     *     <li>{@link #ROCKY_DESERT}
-     *     <li>{@link #NORTHERN_FOREST}
-     *     <li>{@link #DUNE_DESERT}
-     * </ul>
-     *
-     * @param sessionName          name of the session
-     * @param startingLocation     name of the starting location to use, or empty for a random starting location
-     * @param skipOnboarding       {@code true} if onboarding should be skipped, or {@code false} if it shouldn't be skipped
-     * @param advancedGameSettings {@link AdvancedGameSettings Advanced Game Settings} to apply
-     * @param customOptions        custom options to pass to the session URL, not used by vanilla servers
-     * @deprecated {@link NewGameData} is complex and should be created using the {@link #builder(String) builder}
-     * @see Builder#startingLocation(String)
-     * @see Builder#skipOnboarding()
-     * @see Builder#advancedGameSettings(Map)
-     * @see Builder#customOptions(Map)
-     */
-    @Deprecated(forRemoval = true)
-    public NewGameData(String sessionName, String startingLocation, boolean skipOnboarding, Map<String, String> advancedGameSettings, Map<String, String> customOptions) {
-        this(sessionName, null, startingLocation, skipOnboarding, advancedGameSettings, customOptions);
-    }
-
-    /**
-     * Parameters for a new session on the default map.
-     * <p>
-     * Vanilla servers support the following starting locations:
-     * <ul>
-     *     <li>{@link #GRASS_FIELDS}
-     *     <li>{@link #ROCKY_DESERT}
-     *     <li>{@link #NORTHERN_FOREST}
-     *     <li>{@link #DUNE_DESERT}
-     * </ul>
-     *
-     * @param sessionName          name of the session
-     * @param startingLocation     name of the starting location to use, or empty for a random starting location
-     * @param advancedGameSettings {@link AdvancedGameSettings Advanced Game Settings} to apply
-     * @deprecated {@link NewGameData} is complex and should be created using the {@link #builder(String) builder}
-     * @see Builder#startingLocation(String)
-     * @see Builder#advancedGameSettings(Map)
-     */
-    @Deprecated(forRemoval = true)
-    public NewGameData(String sessionName, String startingLocation, Map<String, String> advancedGameSettings) {
-        this(sessionName, startingLocation, true, advancedGameSettings, Map.of());
-    }
-
-    /**
-     * Parameters for a new session at a random starting location on the default map.
-     *
-     * @param sessionName          name of the session
-     * @param advancedGameSettings {@link AdvancedGameSettings Advanced Game Settings} to apply
-     * @deprecated {@link NewGameData} is complex and should be created using the {@link #builder(String) builder}
-     * @see Builder#advancedGameSettings(Map)
-     */
-    @Deprecated(forRemoval = true)
-    public NewGameData(String sessionName, Map<String, String> advancedGameSettings) {
-        this(sessionName, "", advancedGameSettings);
-    }
-
-    /**
-     * Parameters for a new session on the default map.
-     * <p>
-     * Vanilla servers support the following starting locations:
-     * <ul>
-     *     <li>{@link #GRASS_FIELDS}
-     *     <li>{@link #ROCKY_DESERT}
-     *     <li>{@link #NORTHERN_FOREST}
-     *     <li>{@link #DUNE_DESERT}
-     * </ul>
-     *
-     * @param sessionName      name of the session
-     * @param startingLocation name of the starting location to use, or empty for a random starting location
-     * @deprecated {@link NewGameData} is complex and should be created using the {@link #builder(String) builder}
-     * @see Builder#startingLocation(String)
-     */
-    @Deprecated(forRemoval = true)
-    public NewGameData(String sessionName, String startingLocation) {
-        this(sessionName, startingLocation, Map.of());
-    }
-
-    /**
-     * Parameters for a new session at a random starting location on the default map.
-     *
-     * @param sessionName name of the session
-     * @deprecated {@link NewGameData} is complex and should be created using the {@link #builder(String) builder}
-     */
-    @Deprecated(forRemoval = true)
-    public NewGameData(String sessionName) {
-        this(sessionName, "");
-    }
-
-    /**
      * Creates a builder for new game data.
      *
      * @param sessionName name of the session
@@ -173,12 +79,19 @@ public record NewGameData(
         private @Nullable String mapName = null;
         private String startingLocation;
         private boolean skipOnboarding = false;
-        private Map<String, String> advancedGameSettings = Collections.emptyMap();
+        private Map<String, String> creativeModeSettings = Collections.emptyMap();
+        private Map<String, String> gameModeSettings = Collections.emptyMap();
         private Map<String, String> customOptions = Collections.emptyMap();
 
         private Builder(String sessionName) {
             this.sessionName = sessionName;
-            this.startingLocation = ""; // default to random starting location
+            // Choose a random starting location by default
+            this.startingLocation = switch (ThreadLocalRandom.current().nextInt(4)) {
+                case 0 -> GRASS_FIELDS;
+                case 1 -> ROCKY_DESERT;
+                case 2 -> NORTHERN_FOREST;
+                default -> DUNE_DESERT;
+            };
         }
 
         /**
@@ -193,7 +106,8 @@ public record NewGameData(
                     mapName,
                     startingLocation,
                     skipOnboarding,
-                    advancedGameSettings,
+                    creativeModeSettings,
+                    gameModeSettings,
                     customOptions
             );
         }
@@ -241,14 +155,26 @@ public record NewGameData(
         }
 
         /**
-         * Applies Advanced Game Settings to the new session.
+         * Applies Creative Mode settings to the new session.
          *
-         * @param advancedGameSettings {@link AdvancedGameSettings Advanced Game Settings} to apply
+         * @param creativeModeSettings {@link CreativeModeSettings} to apply
          * @return this builder
-         * @see AdvancedGameSettings#builder()
+         * @see CreativeModeSettings#builder()
          */
-        public Builder advancedGameSettings(Map<String, String> advancedGameSettings) {
-            this.advancedGameSettings = Map.copyOf(advancedGameSettings);
+        public Builder creativeModeSettings(Map<String, String> creativeModeSettings) {
+            this.creativeModeSettings = Map.copyOf(creativeModeSettings);
+            return this;
+        }
+
+        /**
+         * Applies Game Mode settings to the new session.
+         *
+         * @param gameModeSettings {@link GameModeSettings Game Mode settings} to apply
+         * @return this builder
+         * @see GameModeSettings#builder()
+         */
+        public Builder gameModeSettings(Map<String, String> gameModeSettings) {
+            this.gameModeSettings = Map.copyOf(gameModeSettings);
             return this;
         }
 

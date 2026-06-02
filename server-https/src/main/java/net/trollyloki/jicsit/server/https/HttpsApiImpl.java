@@ -35,8 +35,17 @@ class HttpsApiImpl implements HttpsApi {
     }
 
     @Override
+    public void verifyAuthenticationToken(AuthenticationToken token) {
+        client.request("VerifyAuthenticationToken", token);
+    }
+
+    @Override
     public void verifyAuthenticationToken() {
-        client.request("VerifyAuthenticationToken", null);
+        String token = client.getToken();
+        if (token == null) {
+            throw new IllegalStateException("Current authentication token is null");
+        }
+        verifyAuthenticationToken(AuthenticationToken.decode(token));
     }
 
     @Override
@@ -67,12 +76,12 @@ class HttpsApiImpl implements HttpsApi {
     }
 
     @Override
-    public AdvancedGameSettings getAdvancedGameSettings() {
-        return client.request("GetAdvancedGameSettings", null, AdvancedGameSettings.class);
+    public CreativeModeSettings getCreativeModeSettings() {
+        return client.request("GetAdvancedGameSettings", null, CreativeModeSettings.class);
     }
 
     @Override
-    public void applyAdvancedGameSettings(Map<String, String> settings) {
+    public void applyCreativeModeSettings(Map<String, String> settings) {
         client.request("ApplyAdvancedGameSettings", Map.of("appliedAdvancedGameSettings", settings));
     }
 
@@ -145,16 +154,16 @@ class HttpsApiImpl implements HttpsApi {
     }
 
     @Override
-    public void loadSave(String saveName, boolean enableAdvancedGameSettings) {
-        client.request("LoadGame", Map.of("saveName", saveName, "enableAdvancedGameSettings", enableAdvancedGameSettings));
+    public void loadSave(String saveName, boolean enableCreativeMode) {
+        client.request("LoadGame", Map.of("saveName", saveName, "enableAdvancedGameSettings", enableCreativeMode));
     }
 
     @Override
-    public void uploadSave(InputStream data, String saveName, boolean load, boolean enableAdvancedGameSettings) {
+    public void uploadSave(InputStream data, String saveName, boolean load, boolean enableCreativeMode) {
         client.multipartRequest("UploadSaveGame", Map.of(
                 "saveName", saveName,
                 "loadSaveGame", load,
-                "enableAdvancedGameSettings", enableAdvancedGameSettings
+                "enableAdvancedGameSettings", enableCreativeMode
         ), "saveGameFile", data);
     }
 

@@ -2,11 +2,11 @@ package net.trollyloki.jicsit.server.https;
 
 import org.jspecify.annotations.NullMarked;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -55,11 +55,23 @@ public enum PrivilegeLevel {
         return value;
     }
 
-    private static final Base64.Decoder TOKEN_DECODER = Base64.getDecoder();
-    private static final JsonMapper TOKEN_MAPPER = new JsonMapper();
-
     private static final Map<String, PrivilegeLevel> VALUE_MAP = Arrays.stream(values())
             .collect(Collectors.toUnmodifiableMap(PrivilegeLevel::value, pl -> pl));
+
+    /**
+     * Gets the {@link PrivilegeLevel} constant with the specified value.
+     *
+     * @param value value
+     * @return {@link PrivilegeLevel privilege level}
+     * @throws IllegalArgumentException if no such constant exists
+     */
+    public static PrivilegeLevel of(String value) {
+        PrivilegeLevel constant = VALUE_MAP.get(value);
+        if (constant == null) {
+            throw new IllegalArgumentException("Unknown privilege level: " + value);
+        }
+        return constant;
+    }
 
     /**
      * Determines the privilege level granted by a token.
@@ -67,30 +79,16 @@ public enum PrivilegeLevel {
      * @param token authentication token
      * @return {@link PrivilegeLevel privilege level}
      * @throws IllegalArgumentException if the token is invalid
+     * @see AuthenticationToken#decode(String)
      */
     public static PrivilegeLevel ofToken(String token) {
-        String[] split = token.split("\\.");
-        if (split.length != 2) {
-            throw new IllegalArgumentException("Tokens must consist of two parts separated by the dot character ('.')");
-        }
+        return AuthenticationToken.decode(token).privilegeLevel();
+    }
 
-        try {
-            JsonNode tokenData = TOKEN_MAPPER.readTree(TOKEN_DECODER.decode(split[0]));
-
-            JsonNode plNode = tokenData.get("pl");
-            if (plNode == null || !plNode.isString()) {
-                throw new IllegalArgumentException("Invalid token JSON");
-            }
-            String pl = plNode.asString();
-
-            PrivilegeLevel level = VALUE_MAP.get(pl);
-            if (level == null) {
-                throw new IllegalArgumentException("Unknown privilege level: " + pl);
-            }
-            return level;
-
-        } catch (JacksonException e) {
-            throw new IllegalArgumentException(e);
+    static class Serializer extends ValueSerializer<PrivilegeLevel> {
+        @Override
+        public void serialize(PrivilegeLevel value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
+            gen.writeString(value.value);
         }
     }
 

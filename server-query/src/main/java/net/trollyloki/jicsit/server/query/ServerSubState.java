@@ -12,7 +12,7 @@ import org.jspecify.annotations.NullMarked;
  * <ul>
  *     <li>{@link #SERVER_GAME_STATE}
  *     <li>{@link #SERVER_OPTIONS}
- *     <li>{@link #ADVANCED_GAME_SETTINGS}
+ *     <li>{@link #CREATIVE_MODE_SETTINGS}
  *     <li>{@link #SAVE_COLLECTION}
  * </ul>
  *
@@ -24,25 +24,25 @@ public record ServerSubState(byte id, short version) {
 
     /**
      * Game state of the server.
-     * Maps to QueryServerState HTTPS API function.
+     * Maps to the "QueryServerState" HTTPS API function.
      */
     public static final byte SERVER_GAME_STATE = 0;
 
     /**
      * Global options set on the server.
-     * Maps to GetServerOptions HTTPS API function.
+     * Maps to the "GetServerOptions" HTTPS API function.
      */
     public static final byte SERVER_OPTIONS = 1;
 
     /**
-     * Advanced Game Settings in the currently loaded session.
-     * Maps to GetAdvancedGameSettings HTTPS API function.
+     * Creative Mode settings on the currently loaded session.
+     * Maps to the "GetAdvancedGameSettings" HTTPS API function.
      */
-    public static final byte ADVANCED_GAME_SETTINGS = 2;
+    public static final byte CREATIVE_MODE_SETTINGS = 2;
 
     /**
      * List of saves available on the server for loading/downloading.
-     * Maps to EnumerateSessions HTTPS API function.
+     * Maps to the "EnumerateSessions" HTTPS API function.
      */
     public static final byte SAVE_COLLECTION = 3;
 

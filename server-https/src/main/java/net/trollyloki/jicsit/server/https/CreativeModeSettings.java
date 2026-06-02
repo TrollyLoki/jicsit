@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The currently applied Advanced Game Settings.
+ * The currently applied Creative Mode settings.
  * <p>
  * Vanilla servers support the following settings:
  * <ul>
@@ -27,11 +27,11 @@ import java.util.Map;
  *     <li>{@link #FLIGHT_MODE}
  * </ul>
  *
- * @param enabled  {@code true} if Advanced Game Settings are enabled for the currently loaded session, or {@code false} if they are not
- * @param settings Advanced Game Settings values
+ * @param enabled  {@code true} if Creative Mode is enabled for the currently loaded session, or {@code false} if it is not
+ * @param settings setting values
  */
 @NullMarked
-public record AdvancedGameSettings(
+public record CreativeModeSettings(
         @JsonProperty("creativeModeEnabled") boolean enabled,
         @JsonProperty("advancedGameSettings") Map<String, String> settings
 ) {
@@ -182,7 +182,7 @@ public record AdvancedGameSettings(
     public static final String FLIGHT_MODE = "FG.PlayerRules.FlightMode";
 
     /**
-     * Creates a builder for Advanced Game Settings.
+     * Creates a builder for Creative Mode settings.
      *
      * @return new builder
      */
@@ -191,7 +191,7 @@ public record AdvancedGameSettings(
     }
 
     /**
-     * A builder for Advanced Game Settings.
+     * A builder for Creative Mode settings.
      */
     public static final class Builder {
 
@@ -205,7 +205,7 @@ public record AdvancedGameSettings(
          * Creates a map containing the settings applied to this builder.
          *
          * @return settings map
-         * @see HttpsApi#applyAdvancedGameSettings(Map)
+         * @see HttpsApi#applyCreativeModeSettings(Map)
          * @see NewGameData
          */
         public Map<String, String> build() {

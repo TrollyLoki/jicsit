@@ -42,7 +42,7 @@ public record Message(byte type, Payload payload) {
     /**
      * Reads a message from a buffer.
      *
-     * @param buffer byte buffer
+     * @param buffer         byte buffer
      * @param payloadReaders map of message types to payload readers
      * @return message
      * @throws ProtocolException                 if there is a protocol error

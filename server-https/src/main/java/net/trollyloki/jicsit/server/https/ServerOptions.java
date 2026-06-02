@@ -18,8 +18,11 @@ import java.util.Map;
  *     <li>{@link #DISABLE_SEASONAL_EVENTS}
  *     <li>{@link #AUTOSAVE_INTERVAL}
  *     <li>{@link #SERVER_RESTART_SCHEDULE}
+ *     <li>{@link #SEND_CRASH_REPORTS}
  *     <li>{@link #SEND_GAMEPLAY_DATA}
  *     <li>{@link #NETWORK_QUALITY}
+ *     <li>{@link #ENABLE_SEASONAL_EVENTS}
+ *     <li>{@link #WEATHER_PRESET}
  * </ul>
  *
  * @param current current server option values
@@ -53,7 +56,10 @@ public record ServerOptions(
      * If all seasonal event content (such as FICSMAS) should be removed from the game.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
+     *
+     * @deprecated Replaced with {@link #ENABLE_SEASONAL_EVENTS}
      */
+    @Deprecated(since = "2.0.0")
     public static final String DISABLE_SEASONAL_EVENTS = "FG.DisableSeasonalEvents";
 
     /**
@@ -82,6 +88,13 @@ public record ServerOptions(
     public static final String SERVER_RESTART_SCHEDULE = "FG.ServerRestartTimeSlot";
 
     /**
+     * If crash reports will be sent to Coffee Stain Studios when the server crashes.
+     * <p>
+     * Example values: {@code "True"} or {@code "False"}
+     */
+    public static final String SEND_CRASH_REPORTS = "FG.AgreeToCrashUpload";
+
+    /**
      * If data can be sent to Coffee Stain Studios while playing. Changing the value requires a restart.
      * <p>
      * Example values: {@code "True"} or {@code "False"}
@@ -101,6 +114,29 @@ public record ServerOptions(
      * </ul>
      */
     public static final String NETWORK_QUALITY = "FG.NetworkQuality";
+
+    /**
+     * If all seasonal event content (such as FICSMAS and the Anniversary event) should remain in the game.
+     * <p>
+     * Example values: {@code "True"} or {@code "False"}
+     */
+    public static final String ENABLE_SEASONAL_EVENTS = "FG.EnableSeasonalEvents";
+
+    /**
+     * The weather preset for the world. This affects the frequency and intensity of rain and other weather events.
+     * <p>
+     * Example values:
+     * <ul>
+     *     <li>{@code "0"} is Default
+     *     <li>{@code "1"} is Dry
+     *     <li>{@code "2"} is Wet
+     *     <li>{@code "3"} is The Great MASSAGE-2 (AB)b
+     *     <li>{@code "4"} is Clear
+     *     <li>{@code "5"} is Raining Kittens and Puppies
+     *     <li>{@code "6"} is Extreme
+     * </ul>
+     */
+    public static final String WEATHER_PRESET = "FG.WeatherPreset";
 
     /**
      * Network quality options.
@@ -129,6 +165,51 @@ public record ServerOptions(
          * Ultra.
          */
         ULTRA,
+
+    }
+
+    /**
+     * Weather preset options.
+     *
+     * @see #WEATHER_PRESET
+     * @see Builder#weatherPreset(WeatherPreset)
+     */
+    public enum WeatherPreset {
+
+        /**
+         * Default weather.
+         */
+        DEFAULT,
+
+        /**
+         * Overcast, wind, and clear weather.
+         */
+        DRY,
+
+        /**
+         * Rain, overcast, and clear weather. Some thunder.
+         */
+        WET,
+
+        /**
+         * Wind and rain, with a touch of overcast and thunderstorms.
+         */
+        GREAT_MASSAGE,
+
+        /**
+         * Clear weather with a touch of wind, rain, and thunder.
+         */
+        CLEAR,
+
+        /**
+         * Chance of rain and windy weather. Low chance of thunder and clear weather.
+         */
+        RAINING_KITTENS_AND_PUPPIES,
+
+        /**
+         * Chance of rain, thunderstorms, and wind. Low chance of clear weather.
+         */
+        EXTREME,
 
     }
 
@@ -205,8 +286,11 @@ public record ServerOptions(
          *
          * @param disabled {@code true} if events should be disabled, or {@code false} if they should remain enabled
          * @return this builder
+         * @deprecated Replaced with {@link #enableSeasonalEvents(boolean)}
          */
+        @Deprecated(since = "2.0.0")
         public Builder disableSeasonalEvents(boolean disabled) {
+            enableSeasonalEvents(!disabled);
             return putBoolean(DISABLE_SEASONAL_EVENTS, disabled);
         }
 
@@ -231,6 +315,16 @@ public record ServerOptions(
         }
 
         /**
+         * Changes if crash reports will be sent to Coffee Stain Studios when the server crashes.
+         *
+         * @param enabled {@code true} if data can be sent, or {@code false} if it cannot
+         * @return this builder
+         */
+        public Builder sendCrashReports(boolean enabled) {
+            return putBoolean(SEND_CRASH_REPORTS, enabled);
+        }
+
+        /**
          * Changes if data can be sent to Coffee Stain Studios while playing. Requires a restart to apply.
          *
          * @param enabled {@code true} if data can be sent, or {@code false} if it cannot
@@ -248,6 +342,27 @@ public record ServerOptions(
          */
         public Builder networkQuality(NetworkQuality quality) {
             return putEnum(NETWORK_QUALITY, quality);
+        }
+
+        /**
+         * Changes if all seasonal event content (such as FICSMAS and the Anniversary event) should remain in the game.
+         *
+         * @param enabled {@code true} if events should remain enabled, or {@code false} if they should be disabled
+         * @return this builder
+         */
+        public Builder enableSeasonalEvents(boolean enabled) {
+            return putBoolean(ENABLE_SEASONAL_EVENTS, enabled);
+        }
+
+        /**
+         * Changes the weather preset for the world.
+         * This affects the frequency and intensity of rain and other weather events.
+         *
+         * @param preset {@link WeatherPreset}
+         * @return this builder
+         */
+        public Builder weatherPreset(WeatherPreset preset) {
+            return putEnum(WEATHER_PRESET, preset);
         }
 
     }
