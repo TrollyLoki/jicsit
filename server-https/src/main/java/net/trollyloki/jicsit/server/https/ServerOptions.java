@@ -109,7 +109,27 @@ public record ServerOptions(
      * @see Builder#networkQuality(NetworkQuality)
      */
     public enum NetworkQuality {
-        LOW, MEDIUM, HIGH, ULTRA
+
+        /**
+         * Low.
+         */
+        LOW,
+
+        /**
+         * Medium.
+         */
+        MEDIUM,
+
+        /**
+         * High.
+         */
+        HIGH,
+
+        /**
+         * Ultra.
+         */
+        ULTRA,
+
     }
 
     /**
