@@ -20,10 +20,10 @@ public final class MockSaveFiles {
             Map.entry("invalid-save-files/string-underflow.sav", "Unexpected end of file"),
             Map.entry("invalid-save-files/invalid-string.sav", "Invalid null terminator: !"),
             Map.entry("invalid-save-files/visibility-underflow.sav", "Unexpected end of file"),
-            Map.entry("invalid-save-files/invalid-is-partitioned-world.sav", "Invalid isPartitionedWorld value: 0"),
+            Map.entry("invalid-save-files/invalid-is-partitioned-world.sav", "Invalid boolean value: -1"),
             Map.entry("invalid-save-files/invalid-hash.sav", "Invalid MD5Hash: 0"),
             Map.entry("invalid-save-files/hash-underflow.sav", "Unexpected end of file"),
-            Map.entry("invalid-save-files/invalid-is-creative-mode-enabled.sav", "Invalid isCreativeModeEnabled value: 256")
+            Map.entry("invalid-save-files/invalid-is-creative-mode-enabled.sav", "Invalid boolean value: 256")
     );
 
     public static final Map<String, MockSaveFileValues> VALUES = Map.ofEntries(

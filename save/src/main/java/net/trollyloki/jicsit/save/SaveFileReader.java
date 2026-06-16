@@ -141,23 +141,9 @@ public final class SaveFileReader {
         String modMetadata = headerVersion >= 8 ? readString(stream) : null;
         int modFlags = headerVersion >= 8 ? readInt(stream) : 0;
         String guid = headerVersion >= 10 ? readString(stream) : null;
-
-        if (headerVersion >= 11) {
-            int isPartitionedWorld = readInt(stream); // always 1
-            if (isPartitionedWorld != 1) {
-                throw new SaveFormatException("Invalid isPartitionedWorld value: " + isPartitionedWorld);
-            }
-        }
-
+        boolean isPartitionedWorld = headerVersion >= 11 && readBoolean(stream); // always true for saves in the vanilla world
         byte[] checksum = headerVersion >= 12 ? readMD5Hash(stream) : null; // MD5 hash of all data after the header
-
-        int isCreativeModeEnabled = 0;
-        if (headerVersion >= 13) {
-            isCreativeModeEnabled = readInt(stream);
-            if (!(isCreativeModeEnabled == 0 || isCreativeModeEnabled == 1)) {
-                throw new SaveFormatException("Invalid isCreativeModeEnabled value: " + isCreativeModeEnabled);
-            }
-        }
+        boolean isCreativeModeEnabled = headerVersion >= 13 && readBoolean(stream);
 
         byte[] hash = null;
         if (checksum != null) {
@@ -188,7 +174,7 @@ public final class SaveFileReader {
                 saveTimestamp,
                 modFlags != 0,
                 !Arrays.equals(hash, checksum),
-                isCreativeModeEnabled != 0
+                isCreativeModeEnabled
         );
         return new SaveFileInfo(
                 headerVersion,
@@ -225,6 +211,16 @@ public final class SaveFileReader {
 
     private static long readLong(InputStream stream) throws IOException {
         return buffer(stream, 8).getLong();
+    }
+
+    private static boolean readBoolean(InputStream stream) throws IOException {
+        int value = readInt(stream);
+
+        return switch (value) {
+            case 0 -> false;
+            case 1 -> true;
+            default -> throw new SaveFormatException("Invalid boolean value: " + value);
+        };
     }
 
     private static String readString(InputStream stream) throws IOException {
