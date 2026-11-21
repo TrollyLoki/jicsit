@@ -1,6 +1,6 @@
 [versions]
-spring = "7.0.6"
-jackson = "3.1.1"
+spring = "7.1.0"
+jackson = "3.3.0"
 
 [libraries]
 spring-web = { module = "org.springframework:spring-web", version.ref = "spring" }
